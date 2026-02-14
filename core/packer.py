@@ -5,6 +5,7 @@ AbaoZip 核心打包逻辑
 
 import os
 import zipfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -140,8 +141,16 @@ class VolumePacker:
                     arcname = os.path.join(self.folder_name, rel_path)
                     zf.write(full_path, arcname)
 
+    def _pack_one_volume(self, i: int, total: int, vol_files: list):
+        """打包单个分卷（供线程池调用）"""
+        part_name = f"{self.folder_name}_part{i:03d}.zip"
+        output_path = os.path.join(self.output_dir, part_name)
+        self._create_zip(output_path, vol_files)
+        zip_size = os.path.getsize(output_path)
+        return i, output_path, part_name, zip_size, len(vol_files)
+
     def pack(self) -> PackResult:
-        """执行打包"""
+        """执行打包（多线程并行压缩各分卷）"""
         result = PackResult()
 
         self._log("正在扫描文件夹...")
@@ -158,31 +167,70 @@ class VolumePacker:
         self._log("正在分配分卷...")
         volume_files = self.assign_volumes(file_list)
         result.volumes = len(volume_files)
-        self._log(f"将分为 {result.volumes} 卷打包")
+
+        max_workers = min(os.cpu_count() or 4, result.volumes)
+        self._log(f"将分为 {result.volumes} 卷打包（{max_workers} 线程并行）")
 
         os.makedirs(self.output_dir, exist_ok=True)
-        processed_files = 0
+        completed = 0
 
-        for i, vol_files in enumerate(volume_files, 1):
-            if self._is_cancelled():
-                self._log("用户取消了打包操作。")
-                return result
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {}
+            for i, vol_files in enumerate(volume_files, 1):
+                f = executor.submit(self._pack_one_volume, i, result.volumes, vol_files)
+                futures[f] = i
 
-            part_name = f"{self.folder_name}_part{i:03d}.zip"
-            output_path = os.path.join(self.output_dir, part_name)
+            for future in as_completed(futures):
+                if self._is_cancelled():
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    self._log("用户取消了打包操作。")
+                    return result
 
-            self._log(f"正在创建第 {i}/{result.volumes} 卷: {part_name} "
-                      f"({len(vol_files)} 个文件)")
+                vol_i, output_path, part_name, zip_size, file_count = future.result()
+                result.output_files.append(output_path)
+                completed += 1
 
-            self._create_zip(output_path, vol_files)
+                progress = int(completed / result.volumes * 100)
+                self._progress(progress)
+                self._log(f"完成第 {vol_i}/{result.volumes} 卷: {part_name} "
+                          f"({file_count} 个文件, {zip_size / 1024 / 1024:.1f} MB)")
 
-            zip_size = os.path.getsize(output_path)
-            result.output_files.append(output_path)
-            processed_files += len(vol_files)
-
-            progress = int(processed_files / result.total_files * 100)
-            self._progress(progress)
-            self._log(f"  完成 — 压缩包大小 {zip_size / 1024 / 1024:.1f} MB")
-
+        result.output_files.sort()
         self._log(f"\n打包完成！共生成 {result.volumes} 个分卷。")
+
+        # 生成一键解压脚本
+        self._generate_unpack_script(result)
+
         return result
+
+    def _generate_unpack_script(self, result: PackResult):
+        """在输出目录生成一键全部解压的 bat 脚本"""
+        if not result.output_files:
+            return
+
+        bat_path = os.path.join(self.output_dir, f"{self.folder_name}_一键全部解压.bat")
+        lines = [
+            "@echo off",
+            "chcp 65001 >nul",
+            'cd /d "%~dp0"',
+            f'echo 正在解压 {self.folder_name} 的全部 {result.volumes} 个分卷...',
+            f'set "OUT_DIR=%cd%\\{self.folder_name}"',
+            'mkdir "%OUT_DIR%" 2>nul',
+            "",
+        ]
+
+        for filepath in result.output_files:
+            zip_name = os.path.basename(filepath)
+            lines.append(f'echo 解压: {zip_name}')
+            lines.append(f'powershell -Command "Expand-Archive -Path \'.\\{zip_name}\' -DestinationPath \'%OUT_DIR%\' -Force"')
+
+        lines.extend([
+            "",
+            "echo.",
+            "echo 全部解压完成！",
+            "pause",
+        ])
+
+        with open(bat_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines))
+        self._log(f"已生成一键解压脚本: {os.path.basename(bat_path)}")
