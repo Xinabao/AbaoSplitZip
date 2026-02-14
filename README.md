@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+  🌐 <a href="https://www.abaodisk.com/AbaoSplitZip">Official Website / 官方网站</a>
+</p>
+
+<p align="center">
   <a href="#-english">English</a> •
   <a href="#-简体中文">简体中文</a> •
   <a href="#-繁體中文">繁體中文</a> •
@@ -42,7 +46,7 @@
 
 ### Quick Start
 
-Download from [Releases](https://github.com/Xinabao/AbaoSplitZip/releases), or run from source:
+Download from [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) or [Official Website](https://www.abaodisk.com/AbaoSplitZip), or run from source:
 
 ```bash
 git clone https://github.com/Xinabao/AbaoSplitZip.git
@@ -70,7 +74,7 @@ python main.py
 
 ### 使用方法
 
-从 [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 下载，或从源码运行：
+从 [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 或 [官方网站](https://www.abaodisk.com/AbaoSplitZip) 下载，或从源码运行：
 
 ```bash
 git clone https://github.com/Xinabao/AbaoSplitZip.git
