@@ -169,7 +169,7 @@ class MainWindow(QMainWindow):
         self.source_edit.setPlaceholderText(t("hint_source"))
         row1.addWidget(self.source_edit)
         btn_src = QPushButton(t("browse"))
-        btn_src.setFixedWidth(70)
+        btn_src.setFixedWidth(105)
         btn_src.clicked.connect(self._browse_source)
         row1.addWidget(btn_src)
         path_layout.addLayout(row1)
@@ -180,7 +180,7 @@ class MainWindow(QMainWindow):
         self.output_edit.setPlaceholderText(t("hint_output"))
         row2.addWidget(self.output_edit)
         btn_out = QPushButton(t("browse"))
-        btn_out.setFixedWidth(70)
+        btn_out.setFixedWidth(105)
         btn_out.clicked.connect(self._browse_output)
         row2.addWidget(btn_out)
         path_layout.addLayout(row2)
@@ -200,7 +200,7 @@ class MainWindow(QMainWindow):
         self.size_spin.setFixedWidth(120)
         size_row.addWidget(self.size_spin)
         size_hint = QLabel(t("hint_volume_size"))
-        size_hint.setStyleSheet("color: #888; font-size: 13px;")
+        size_hint.setStyleSheet("color: #888; font-size: 15px;")
         size_row.addWidget(size_hint)
         size_row.addStretch()
         settings_layout.addLayout(size_row)
@@ -233,11 +233,11 @@ class MainWindow(QMainWindow):
         self.radio_zipcrypto = QRadioButton("ZipCrypto")
         self.radio_zipcrypto.setChecked(True)
         zipcrypto_hint = QLabel(t("enc_zipcrypto"))
-        zipcrypto_hint.setStyleSheet("color: #888; font-size: 13px;")
+        zipcrypto_hint.setStyleSheet("color: #888; font-size: 15px;")
 
         self.radio_aes = QRadioButton("AES-256")
         aes_hint = QLabel(t("enc_aes"))
-        aes_hint.setStyleSheet("color: #888; font-size: 13px;")
+        aes_hint.setStyleSheet("color: #888; font-size: 15px;")
 
         enc_row1 = QHBoxLayout()
         enc_row1.addWidget(self.radio_zipcrypto)
@@ -284,7 +284,7 @@ class MainWindow(QMainWindow):
 
         desc = QLabel(t("unpack_desc"))
         desc.setWordWrap(True)
-        desc.setStyleSheet("color: #666; font-size: 13px; margin-bottom: 8px;")
+        desc.setStyleSheet("color: #666; font-size: 15px; margin-bottom: 8px;")
         layout.addWidget(desc)
 
         # 支持格式提示
@@ -294,7 +294,7 @@ class MainWindow(QMainWindow):
         if ".rar" in SUPPORTED_EXTENSIONS:
             fmt_parts.append("RAR")
         fmt_label = QLabel(t("unpack_formats") + " " + " / ".join(fmt_parts))
-        fmt_label.setStyleSheet("color: #0078d4; font-size: 13px; font-weight: bold; margin-bottom: 4px;")
+        fmt_label.setStyleSheet("color: #0078d4; font-size: 15px; font-weight: bold; margin-bottom: 4px;")
         layout.addWidget(fmt_label)
 
         # 路径设置
@@ -307,7 +307,7 @@ class MainWindow(QMainWindow):
         self.unpack_zip_edit.setPlaceholderText(t("hint_select_zip"))
         row1.addWidget(self.unpack_zip_edit)
         btn_zip = QPushButton(t("browse"))
-        btn_zip.setFixedWidth(70)
+        btn_zip.setFixedWidth(105)
         btn_zip.clicked.connect(self._browse_zip)
         row1.addWidget(btn_zip)
         path_layout.addLayout(row1)
@@ -318,7 +318,7 @@ class MainWindow(QMainWindow):
         self.unpack_output_edit.setPlaceholderText(t("hint_extract_to"))
         row2.addWidget(self.unpack_output_edit)
         btn_out = QPushButton(t("browse"))
-        btn_out.setFixedWidth(70)
+        btn_out.setFixedWidth(105)
         btn_out.clicked.connect(self._browse_unpack_output)
         row2.addWidget(btn_out)
         path_layout.addLayout(row2)
