@@ -1,5 +1,5 @@
 """
-AbaoZip 入口
+AbaoSplitZip 入口
 启动画面先于主窗口显示，掩盖 Python/Qt 的加载延迟
 """
 
@@ -8,6 +8,8 @@ import sys
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QColor, QFont, QPainter
 from PyQt5.QtWidgets import QApplication, QSplashScreen
+
+from core.i18n import detect_system_language, set_language, t
 
 
 class AbaoSplash(QSplashScreen):
@@ -24,25 +26,27 @@ class AbaoSplash(QSplashScreen):
         painter.setPen(QColor("white"))
         painter.setFont(QFont("Microsoft YaHei UI", 22, QFont.Bold))
         painter.drawText(self.rect().adjusted(0, 30, 0, -40),
-                         Qt.AlignCenter, "AbaoZip")
+                         Qt.AlignCenter, "AbaoSplitZip")
         painter.setFont(QFont("Microsoft YaHei UI", 10))
         painter.drawText(self.rect().adjusted(0, 40, 0, 0),
-                         Qt.AlignCenter, "分卷独立解压打包工具")
+                         Qt.AlignCenter, t("splash_subtitle"))
         painter.setFont(QFont("Microsoft YaHei UI", 9))
         painter.setPen(QColor(255, 255, 255, 160))
         painter.drawText(self.rect().adjusted(0, 80, 0, 0),
-                         Qt.AlignCenter, "正在加载...")
+                         Qt.AlignCenter, t("splash_loading"))
 
 
 def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
+    # 自动检测系统语言
+    set_language(detect_system_language())
+
     splash = AbaoSplash()
     splash.show()
     app.processEvents()
 
-    # 延迟导入主窗口，让启动画面先显示
     from gui.main_window import MainWindow
 
     window = MainWindow()

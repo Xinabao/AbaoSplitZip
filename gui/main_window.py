@@ -1,5 +1,5 @@
 """
-AbaoZip GUI 主窗口
+AbaoZip GUI 主窗口 (i18n)
 """
 
 import os
@@ -15,6 +15,15 @@ from PyQt5.QtWidgets import (
 
 from core.packer import COMPRESSION_LEVELS, VolumePacker
 from core.unpacker import VolumeUnpacker
+from core.i18n import t, set_language, get_language, detect_system_language, LANGUAGES
+
+# Mapping from i18n key to the original Chinese key used in COMPRESSION_LEVELS
+_COMP_KEYS = [
+    ("compression_store", "仅存储 (最快)"),
+    ("compression_fast", "快速压缩"),
+    ("compression_normal", "标准压缩"),
+    ("compression_max", "最大压缩 (最慢)"),
+]
 
 
 class PackWorker(QThread):
@@ -77,25 +86,49 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.worker = None
-        self.setWindowTitle("AbaoZip — 分卷独立解压打包工具")
+        self._comp_keys = _COMP_KEYS
+
+        # Auto-detect system language
+        detected = detect_system_language()
+        set_language(detected)
+
         self.setMinimumWidth(620)
         self.setMinimumHeight(700)
         self._init_ui()
 
     def _init_ui(self):
+        self.setWindowTitle(t("app_title"))
+
         central = QWidget()
         self.setCentralWidget(central)
         layout = QVBoxLayout(central)
         layout.setSpacing(10)
 
-        # ── 顶部标题 ──
-        title = QLabel("AbaoZip 分卷打包工具")
+        # ── 顶部标题栏（标题 + 语言选择器） ──
+        header_row = QHBoxLayout()
+        title = QLabel(t("header_title"))
         title.setFont(QFont("Microsoft YaHei UI", 14, QFont.Bold))
         title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title)
+        header_row.addStretch()
+        header_row.addWidget(title)
+        header_row.addStretch()
 
-        desc = QLabel('将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。<br>'
-                      '<b style="color: red;">打包完成后会同时生成「一键全部解压.bat」脚本，如需一次性解压所有分卷请运行该脚本。</b>')
+        self.lang_combo = QComboBox()
+        self.lang_combo.setFixedWidth(120)
+        lang_names = list(LANGUAGES.keys())
+        self.lang_combo.addItems(lang_names)
+        # Pre-select the current language
+        current_code = get_language()
+        for name, code in LANGUAGES.items():
+            if code == current_code:
+                self.lang_combo.setCurrentText(name)
+                break
+        self.lang_combo.currentTextChanged.connect(self._on_language_changed)
+        header_row.addWidget(self.lang_combo)
+        layout.addLayout(header_row)
+
+        desc = QLabel(t("header_desc") + '<br>'
+                      '<b style="color: red;">' + t("header_bat_hint") + '</b>')
         desc.setAlignment(Qt.AlignCenter)
         desc.setWordWrap(True)
         desc.setStyleSheet("color: #666; margin-bottom: 6px;")
@@ -103,8 +136,8 @@ class MainWindow(QMainWindow):
 
         # ── 标签页 ──
         self.tabs = QTabWidget()
-        self.tabs.addTab(self._create_pack_tab(), "📦 打包")
-        self.tabs.addTab(self._create_unpack_tab(), "📂 解压")
+        self.tabs.addTab(self._create_pack_tab(), t("tab_pack"))
+        self.tabs.addTab(self._create_unpack_tab(), t("tab_unpack"))
         layout.addWidget(self.tabs)
 
         # ── 进度条 ──
@@ -117,7 +150,7 @@ class MainWindow(QMainWindow):
         self.log_text.setReadOnly(True)
         self.log_text.setFont(QFont("Consolas", 9))
         self.log_text.setFixedHeight(160)
-        self.log_text.setPlaceholderText("日志将显示在这里...")
+        self.log_text.setPlaceholderText(t("log_placeholder"))
         layout.addWidget(self.log_text)
 
     # ── 打包标签页 ──
@@ -127,26 +160,26 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(tab)
 
         # 路径设置
-        path_group = QGroupBox("路径设置")
+        path_group = QGroupBox(t("group_paths"))
         path_layout = QVBoxLayout(path_group)
 
         row1 = QHBoxLayout()
-        row1.addWidget(QLabel("源文件夹:"))
+        row1.addWidget(QLabel(t("label_source")))
         self.source_edit = QLineEdit()
-        self.source_edit.setPlaceholderText("选择要打包的文件夹")
+        self.source_edit.setPlaceholderText(t("hint_source"))
         row1.addWidget(self.source_edit)
-        btn_src = QPushButton("浏览...")
+        btn_src = QPushButton(t("browse"))
         btn_src.setFixedWidth(70)
         btn_src.clicked.connect(self._browse_source)
         row1.addWidget(btn_src)
         path_layout.addLayout(row1)
 
         row2 = QHBoxLayout()
-        row2.addWidget(QLabel("输出目录:"))
+        row2.addWidget(QLabel(t("label_output")))
         self.output_edit = QLineEdit()
-        self.output_edit.setPlaceholderText("选择分卷压缩包的保存位置")
+        self.output_edit.setPlaceholderText(t("hint_output"))
         row2.addWidget(self.output_edit)
-        btn_out = QPushButton("浏览...")
+        btn_out = QPushButton(t("browse"))
         btn_out.setFixedWidth(70)
         btn_out.clicked.connect(self._browse_output)
         row2.addWidget(btn_out)
@@ -155,29 +188,30 @@ class MainWindow(QMainWindow):
         layout.addWidget(path_group)
 
         # 打包设置
-        settings_group = QGroupBox("打包设置")
+        settings_group = QGroupBox(t("group_settings"))
         settings_layout = QVBoxLayout(settings_group)
 
         size_row = QHBoxLayout()
-        size_row.addWidget(QLabel("分卷大小:"))
+        size_row.addWidget(QLabel(t("label_volume_size")))
         self.size_spin = QSpinBox()
         self.size_spin.setRange(1, 999999)
         self.size_spin.setValue(700)
         self.size_spin.setSuffix(" MB")
         self.size_spin.setFixedWidth(120)
         size_row.addWidget(self.size_spin)
-        size_hint = QLabel("每卷的目标大小（实际会略有偏差以保证文件完整）")
+        size_hint = QLabel(t("hint_volume_size"))
         size_hint.setStyleSheet("color: #888; font-size: 11px;")
         size_row.addWidget(size_hint)
         size_row.addStretch()
         settings_layout.addLayout(size_row)
 
         comp_row = QHBoxLayout()
-        comp_row.addWidget(QLabel("压缩级别:"))
+        comp_row.addWidget(QLabel(t("label_compression")))
         self.comp_combo = QComboBox()
-        self.comp_combo.addItems(COMPRESSION_LEVELS.keys())
-        self.comp_combo.setCurrentText("标准压缩")
-        self.comp_combo.setFixedWidth(180)
+        for i18n_key, _orig_key in self._comp_keys:
+            self.comp_combo.addItem(t(i18n_key))
+        self.comp_combo.setCurrentIndex(2)  # "标准压缩" / Normal compression
+        self.comp_combo.setFixedWidth(220)
         comp_row.addWidget(self.comp_combo)
         comp_row.addStretch()
         settings_layout.addLayout(comp_row)
@@ -185,24 +219,24 @@ class MainWindow(QMainWindow):
         layout.addWidget(settings_group)
 
         # 密码与加密
-        pwd_group = QGroupBox("密码与加密（可选）")
+        pwd_group = QGroupBox(t("group_password"))
         pwd_layout = QVBoxLayout(pwd_group)
 
         pwd_row = QHBoxLayout()
-        pwd_row.addWidget(QLabel("密码:"))
+        pwd_row.addWidget(QLabel(t("label_password")))
         self.pwd_edit = QLineEdit()
         self.pwd_edit.setEchoMode(QLineEdit.Password)
-        self.pwd_edit.setPlaceholderText("留空则不加密")
+        self.pwd_edit.setPlaceholderText(t("hint_password"))
         pwd_row.addWidget(self.pwd_edit)
         pwd_layout.addLayout(pwd_row)
 
         self.radio_zipcrypto = QRadioButton("ZipCrypto")
         self.radio_zipcrypto.setChecked(True)
-        zipcrypto_hint = QLabel("  ✅ Windows 10/11 资源管理器可直接解压，安全性一般")
+        zipcrypto_hint = QLabel(t("enc_zipcrypto"))
         zipcrypto_hint.setStyleSheet("color: #888; font-size: 11px;")
 
         self.radio_aes = QRadioButton("AES-256")
-        aes_hint = QLabel("  🔒 安全性高，需用 7-Zip / WinRAR 等工具解压")
+        aes_hint = QLabel(t("enc_aes"))
         aes_hint.setStyleSheet("color: #888; font-size: 11px;")
 
         enc_row1 = QHBoxLayout()
@@ -221,7 +255,7 @@ class MainWindow(QMainWindow):
 
         # 操作按钮
         btn_row = QHBoxLayout()
-        self.btn_start = QPushButton("▶ 开始打包")
+        self.btn_start = QPushButton(t("btn_start_pack"))
         self.btn_start.setFixedHeight(36)
         self.btn_start.setStyleSheet(
             "QPushButton { background-color: #0078d4; color: white; font-size: 13px; "
@@ -232,7 +266,7 @@ class MainWindow(QMainWindow):
         self.btn_start.clicked.connect(self._start_pack)
         btn_row.addWidget(self.btn_start)
 
-        self.btn_cancel = QPushButton("取消")
+        self.btn_cancel = QPushButton(t("btn_cancel"))
         self.btn_cancel.setFixedHeight(36)
         self.btn_cancel.setFixedWidth(80)
         self.btn_cancel.setEnabled(False)
@@ -248,33 +282,32 @@ class MainWindow(QMainWindow):
         tab = QWidget()
         layout = QVBoxLayout(tab)
 
-        desc = QLabel("选择任意一个分卷文件（如 XXX_part001.zip），将自动识别并解压同组的所有分卷。\n"
-                      "也可以解压单个普通 ZIP 文件。")
+        desc = QLabel(t("unpack_desc"))
         desc.setWordWrap(True)
         desc.setStyleSheet("color: #666; font-size: 11px; margin-bottom: 8px;")
         layout.addWidget(desc)
 
         # 路径设置
-        path_group = QGroupBox("路径设置")
+        path_group = QGroupBox(t("group_paths"))
         path_layout = QVBoxLayout(path_group)
 
         row1 = QHBoxLayout()
-        row1.addWidget(QLabel("选择分卷:"))
+        row1.addWidget(QLabel(t("label_select_zip")))
         self.unpack_zip_edit = QLineEdit()
-        self.unpack_zip_edit.setPlaceholderText("选择任意一个分卷 ZIP 文件")
+        self.unpack_zip_edit.setPlaceholderText(t("hint_select_zip"))
         row1.addWidget(self.unpack_zip_edit)
-        btn_zip = QPushButton("浏览...")
+        btn_zip = QPushButton(t("browse"))
         btn_zip.setFixedWidth(70)
         btn_zip.clicked.connect(self._browse_zip)
         row1.addWidget(btn_zip)
         path_layout.addLayout(row1)
 
         row2 = QHBoxLayout()
-        row2.addWidget(QLabel("解压到:"))
+        row2.addWidget(QLabel(t("label_extract_to")))
         self.unpack_output_edit = QLineEdit()
-        self.unpack_output_edit.setPlaceholderText("选择解压目标目录")
+        self.unpack_output_edit.setPlaceholderText(t("hint_extract_to"))
         row2.addWidget(self.unpack_output_edit)
-        btn_out = QPushButton("浏览...")
+        btn_out = QPushButton(t("browse"))
         btn_out.setFixedWidth(70)
         btn_out.clicked.connect(self._browse_unpack_output)
         row2.addWidget(btn_out)
@@ -283,18 +316,18 @@ class MainWindow(QMainWindow):
         layout.addWidget(path_group)
 
         # 密码
-        pwd_group = QGroupBox("密码（如果压缩包有密码）")
+        pwd_group = QGroupBox(t("group_unpack_password"))
         pwd_layout = QHBoxLayout(pwd_group)
-        pwd_layout.addWidget(QLabel("密码:"))
+        pwd_layout.addWidget(QLabel(t("label_password")))
         self.unpack_pwd_edit = QLineEdit()
         self.unpack_pwd_edit.setEchoMode(QLineEdit.Password)
-        self.unpack_pwd_edit.setPlaceholderText("留空则不使用密码")
+        self.unpack_pwd_edit.setPlaceholderText(t("hint_unpack_password"))
         pwd_layout.addWidget(self.unpack_pwd_edit)
         layout.addWidget(pwd_group)
 
         # 操作按钮
         btn_row = QHBoxLayout()
-        self.btn_unpack = QPushButton("▶ 开始解压")
+        self.btn_unpack = QPushButton(t("btn_start_unpack"))
         self.btn_unpack.setFixedHeight(36)
         self.btn_unpack.setStyleSheet(
             "QPushButton { background-color: #107c10; color: white; font-size: 13px; "
@@ -305,7 +338,7 @@ class MainWindow(QMainWindow):
         self.btn_unpack.clicked.connect(self._start_unpack)
         btn_row.addWidget(self.btn_unpack)
 
-        self.btn_unpack_cancel = QPushButton("取消")
+        self.btn_unpack_cancel = QPushButton(t("btn_cancel"))
         self.btn_unpack_cancel.setFixedHeight(36)
         self.btn_unpack_cancel.setFixedWidth(80)
         self.btn_unpack_cancel.setEnabled(False)
@@ -316,25 +349,70 @@ class MainWindow(QMainWindow):
         layout.addStretch()
         return tab
 
+    # ── 语言切换 ──
+
+    def _on_language_changed(self, lang_name: str):
+        code = LANGUAGES.get(lang_name)
+        if code and code != get_language():
+            set_language(code)
+            self._rebuild_ui()
+
+    def _rebuild_ui(self):
+        """Save state, rebuild all UI, restore state."""
+        # Save current state
+        source = self.source_edit.text()
+        output = self.output_edit.text()
+        password = self.pwd_edit.text()
+        volume_size = self.size_spin.value()
+        comp_index = self.comp_combo.currentIndex()
+        aes_checked = self.radio_aes.isChecked()
+        tab_index = self.tabs.currentIndex()
+        unpack_zip = self.unpack_zip_edit.text()
+        unpack_output = self.unpack_output_edit.text()
+        unpack_pwd = self.unpack_pwd_edit.text()
+        log_content = self.log_text.toHtml()
+        progress_val = self.progress_bar.value()
+
+        # Rebuild
+        self._init_ui()
+
+        # Restore state
+        self.source_edit.setText(source)
+        self.output_edit.setText(output)
+        self.pwd_edit.setText(password)
+        self.size_spin.setValue(volume_size)
+        self.comp_combo.setCurrentIndex(comp_index)
+        if aes_checked:
+            self.radio_aes.setChecked(True)
+        else:
+            self.radio_zipcrypto.setChecked(True)
+        self.tabs.setCurrentIndex(tab_index)
+        self.unpack_zip_edit.setText(unpack_zip)
+        self.unpack_output_edit.setText(unpack_output)
+        self.unpack_pwd_edit.setText(unpack_pwd)
+        self.log_text.setHtml(log_content)
+        self.progress_bar.setValue(progress_val)
+
     # ── 槽函数 ──
 
     def _browse_source(self):
-        path = QFileDialog.getExistingDirectory(self, "选择源文件夹")
+        path = QFileDialog.getExistingDirectory(self, t("dialog_select_source"))
         if path:
             self.source_edit.setText(path)
 
     def _browse_output(self):
-        path = QFileDialog.getExistingDirectory(self, "选择输出目录")
+        path = QFileDialog.getExistingDirectory(self, t("dialog_select_output"))
         if path:
             self.output_edit.setText(path)
 
     def _browse_zip(self):
-        path, _ = QFileDialog.getOpenFileName(self, "选择分卷 ZIP 文件", "", "ZIP 文件 (*.zip)")
+        path, _ = QFileDialog.getOpenFileName(
+            self, t("dialog_select_zip"), "", t("dialog_zip_filter"))
         if path:
             self.unpack_zip_edit.setText(path)
 
     def _browse_unpack_output(self):
-        path = QFileDialog.getExistingDirectory(self, "选择解压目标目录")
+        path = QFileDialog.getExistingDirectory(self, t("dialog_select_extract"))
         if path:
             self.unpack_output_edit.setText(path)
 
@@ -349,21 +427,25 @@ class MainWindow(QMainWindow):
         output = self.output_edit.text().strip()
 
         if not source or not os.path.isdir(source):
-            QMessageBox.warning(self, "提示", "请选择有效的源文件夹。")
+            QMessageBox.warning(self, t("msg_hint"), t("msg_select_source"))
             return
         if not output:
-            QMessageBox.warning(self, "提示", "请选择输出目录。")
+            QMessageBox.warning(self, t("msg_hint"), t("msg_select_output"))
             return
 
         password = self.pwd_edit.text() or None
         encryption = "aes256" if self.radio_aes.isChecked() else "zipcrypto"
+
+        # Map localized combo index back to original Chinese key for VolumePacker
+        comp_index = self.comp_combo.currentIndex()
+        compression_name = self._comp_keys[comp_index][1]
 
         packer = VolumePacker(
             source_dir=source,
             output_dir=output,
             volume_size_mb=self.size_spin.value(),
             password=password,
-            compression_name=self.comp_combo.currentText(),
+            compression_name=compression_name,
             encryption_method=encryption,
         )
 
@@ -382,10 +464,10 @@ class MainWindow(QMainWindow):
         output = self.unpack_output_edit.text().strip()
 
         if not zip_path or not os.path.isfile(zip_path):
-            QMessageBox.warning(self, "提示", "请选择有效的 ZIP 文件。")
+            QMessageBox.warning(self, t("msg_hint"), t("msg_select_zip"))
             return
         if not output:
-            QMessageBox.warning(self, "提示", "请选择解压目标目录。")
+            QMessageBox.warning(self, t("msg_hint"), t("msg_select_output"))
             return
 
         password = self.unpack_pwd_edit.text() or None
@@ -417,7 +499,7 @@ class MainWindow(QMainWindow):
         self._set_buttons_enabled(True)
         if success:
             self.progress_bar.setValue(100)
-            QMessageBox.information(self, "完成", msg)
+            QMessageBox.information(self, t("msg_done"), msg)
         else:
-            QMessageBox.warning(self, "提示", f"操作未完成：{msg}")
+            QMessageBox.warning(self, t("msg_hint"), t("msg_incomplete") + msg)
         self.worker = None
