@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AbaoSplitZip — Split Large Folders into Independently Extractable Volumes</title>
+<meta name="description" content="Free open-source tool to split large folders into volume-sized ZIP files where each volume can be extracted independently. Supports dual encryption (ZipCrypto/AES-256), multi-threaded packing, and multi-format extraction (ZIP/7z/RAR).">
+<meta name="keywords" content="split zip independent extract, volume zip extract separately, large folder splitter, zip split tool, file splitter, archive tool, multi-volume zip, split archive standalone, independent extraction, AbaoSplitZip">
+
+<!-- Open Graph -->
+<meta property="og:title" content="AbaoSplitZip — Independent Volume Packer">
+<meta property="og:description" content="Split large folders into volume-sized ZIPs. Each volume extracts independently — no merging required.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.abaodisk.com/AbaoSplitZip">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #12151c;
+    --bg-card: #181c26;
+    --bg-card-hover: #1e2330;
+    --border: #252a38;
+    --border-bright: #363e52;
+    --text-primary: #e8ecf4;
+    --text-secondary: #8892a8;
+    --text-muted: #5a6478;
+    --accent: #3b82f6;
+    --accent-dim: #2563eb;
+    --accent-glow: rgba(59, 130, 246, 0.15);
+    --accent-green: #22c55e;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+    --font-display: 'Outfit', sans-serif;
+    --font-mono: 'DM Mono', 'Consolas', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ═══ GRAIN OVERLAY ═══ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: #60a5fa; }
+
+  /* ═══ NAV ═══ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-weight: 700; font-size: 18px;
+    color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary); font-size: 14px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-cta {
+    background: var(--accent) !important; color: #fff !important;
+    padding: 8px 20px; border-radius: 8px; font-weight: 600;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--accent-dim) !important; transform: translateY(-1px); }
+
+  /* ═══ HERO ═══ */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px 6px 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+  .hero-badge-dot {
+    width: 8px; height: 8px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .dim { color: var(--text-muted); font-weight: 300; }
+  .hero-sub {
+    font-size: 20px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    font-weight: 300;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px; font-weight: 600;
+    font-family: var(--font-display);
+    cursor: pointer; border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.3);
+  }
+  .btn-primary:hover {
+    background: var(--accent-dim); color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+  }
+  .btn-secondary {
+    background: var(--bg-card); color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-card-hover); color: var(--text-primary);
+    border-color: var(--border-bright);
+    transform: translateY(-2px);
+  }
+  .btn svg { width: 18px; height: 18px; }
+
+  /* ═══ VOLUME DIAGRAM ═══ */
+  .hero-visual {
+    margin-top: 80px;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+  }
+  .diagram {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .diagram::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .diagram-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+  .diagram-flow {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .diagram-folder {
+    background: var(--bg-secondary);
+    border: 1px dashed var(--border-bright);
+    border-radius: 12px;
+    padding: 20px 28px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .diagram-folder-icon { font-size: 36px; margin-bottom: 8px; }
+  .diagram-folder-name {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .diagram-folder-size {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .diagram-arrow {
+    color: var(--text-muted);
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .diagram-volumes {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .diagram-vol {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.03));
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 120px;
+    transition: all 0.3s;
+  }
+  .diagram-vol:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(59,130,246,0.15);
+  }
+  .diagram-vol-icon { font-size: 28px; margin-bottom: 6px; }
+  .diagram-vol-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-primary);
+  }
+  .diagram-vol-tag {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-green);
+    background: rgba(34,197,94,0.1);
+    border: 1px solid rgba(34,197,94,0.2);
+    padding: 2px 8px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══ SECTION STYLES ═══ */
+  section { padding: 100px 0; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 560px;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ═══ FEATURES ═══ */
+  #features { border-top: 1px solid var(--border); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 60px;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .feature-icon.blue { background: rgba(59,130,246,0.12); }
+  .feature-icon.green { background: rgba(34,197,94,0.12); }
+  .feature-icon.amber { background: rgba(245,158,11,0.12); }
+  .feature-icon.rose { background: rgba(244,63,94,0.12); }
+  .feature-icon.purple { background: rgba(139,92,246,0.12); }
+  .feature-icon.cyan { background: rgba(6,182,212,0.12); }
+  .feature-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* ═══ HOW IT WORKS ═══ */
+  #how-it-works { border-top: 1px solid var(--border); }
+  .steps {
+    margin-top: 60px;
+    display: grid;
+    gap: 0;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 48px; height: 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .step h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* ═══ USAGE TABS ═══ */
+  #usage { border-top: 1px solid var(--border); }
+  .tabs-wrapper { margin-top: 48px; }
+  .tab-buttons {
+    display: flex; gap: 4px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    width: fit-content;
+    margin-bottom: 32px;
+  }
+  .tab-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .tab-btn:not(.active):hover { color: var(--text-primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .usage-list {
+    list-style: none;
+    display: grid;
+    gap: 16px;
+  }
+  .usage-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .usage-list li .num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .usage-list li strong { color: var(--text-primary); }
+  .naming-block {
+    margin-top: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .naming-block pre {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+  .naming-block pre .file { color: var(--accent); }
+  .naming-block pre .bat { color: var(--accent-amber); }
+
+  /* ═══ SPECS ═══ */
+  #specs { border-top: 1px solid var(--border); }
+  .specs-grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .spec-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+  }
+  .spec-card h3 {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .spec-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(37,42,56,0.6);
+    font-size: 14px;
+  }
+  .spec-item:last-child { border-bottom: none; }
+  .spec-item .label { color: var(--text-secondary); }
+  .spec-item .value {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .spec-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-display);
+  }
+  .spec-tag.blue { background: rgba(59,130,246,0.12); color: var(--accent); }
+  .spec-tag.green { background: rgba(34,197,94,0.12); color: var(--accent-green); }
+  .spec-tag.amber { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+
+  .notes-list {
+    margin-top: 32px;
+    display: grid;
+    gap: 12px;
+  }
+  .note-item {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .note-icon { flex-shrink: 0; color: var(--accent-amber); }
+
+  /* ═══ DOWNLOAD CTA ═══ */
+  #download {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 120px 0;
+    position: relative;
+  }
+  #download::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #download .section-desc { margin: 0 auto 40px; text-align: center; }
+  .download-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .platform-note {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  /* ═══ FOOTER ═══ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-left {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .footer-links {
+    display: flex; gap: 24px;
+  }
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--text-secondary); }
+
+  /* ═══ ANIMATIONS ═══ */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .hero { padding: 120px 0 60px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .diagram-flow { flex-direction: column; }
+    .diagram-arrow { transform: rotate(90deg); }
+    .specs-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .step { grid-template-columns: 44px 1fr; gap: 16px; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-icon">A</span>
+      AbaoSplitZip
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#usage">Usage</a>
+      <a href="#specs">Specs</a>
+      <a href="#download" class="nav-cta">Download Free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Open Source &middot; GPL v3 &middot; Free Forever
+    </div>
+    <h1>
+      Split folders.<br>
+      <span class="accent">Extract each part</span><br>
+      <span class="dim">independently.</span>
+    </h1>
+    <p class="hero-sub">
+      Pack large folders into volume-sized ZIP files where every single volume 
+      is a complete, standalone archive. No merging. No special tools. 
+      Just extract what you need.
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download for Free
+      </a>
+      <a href="https://github.com/Xinabao/AbaoSplitZip" class="btn btn-secondary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <!-- Diagram -->
+    <div class="hero-visual">
+      <div class="diagram">
+        <div class="diagram-label">How it works</div>
+        <div class="diagram-flow">
+          <div class="diagram-folder">
+            <div class="diagram-folder-icon">📁</div>
+            <div class="diagram-folder-name">MyProject/</div>
+            <div class="diagram-folder-size">12.8 GB &middot; 4,200 files</div>
+          </div>
+          <div class="diagram-arrow">→</div>
+          <div class="diagram-volumes">
+            <div class="diagram-vol">
+              <div class="diagram-vol-icon">📦</div>
+              <div class="diagram-vol-name">MyProject_part001.zip</div>
+              <div class="diagram-vol-tag">✓ Independent</div>
+            </div>
+            <div class="diagram-vol">
+              <div class="diagram-vol-icon">📦</div>
+              <div class="diagram-vol-name">MyProject_part002.zip</div>
+              <div class="diagram-vol-tag">✓ Independent</div>
+            </div>
+            <div class="diagram-vol">
+              <div class="diagram-vol-icon">📦</div>
+              <div class="diagram-vol-name">MyProject_part003.zip</div>
+              <div class="diagram-vol-tag">✓ Independent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+      <p class="section-desc">Purpose-built for one job: splitting folders into independently extractable volumes.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon blue">📦</div>
+        <h3>Independent Volume Extraction</h3>
+        <p>Every volume is a complete, self-contained ZIP file. Extract any single part without needing the others — no merging, no reassembly, no special software required.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon green">🔐</div>
+        <h3>Dual Encryption Modes</h3>
+        <p><strong>ZipCrypto</strong> — compatible with Windows 10/11 Explorer for direct extraction. <strong>AES-256</strong> — maximum security, works with 7-Zip and WinRAR.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon amber">⚡</div>
+        <h3>Multi-threaded Packing</h3>
+        <p>Compresses multiple volumes in parallel across all CPU cores. 64MB buffered I/O with serialized disk writes to minimize fragmentation.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon rose">📂</div>
+        <h3>Multi-format Extraction</h3>
+        <p>Built-in extractor handles ZIP, 7z, and RAR archives. Auto-detects AbaoSplitZip volume sets and extracts all parts together.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon purple">🌍</div>
+        <h3>9 Languages</h3>
+        <p>Auto-detects your system language. Supports Simplified Chinese, Traditional Chinese, English, Japanese, Korean, German, French, Spanish, and Portuguese.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon cyan">💻</div>
+        <h3>Cross-platform</h3>
+        <p>Native builds for Windows, macOS, and Linux. Single-file executable — no installation required. Just download and run.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Simple by design.</h2>
+      <p class="section-desc">Unlike traditional split archives that require all parts to extract, AbaoSplitZip distributes files across volumes intelligently.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <div>
+          <h3>Scan &amp; Sort</h3>
+          <p>Scans the source folder recursively and sorts all files by size (largest first) for optimal bin packing.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">02</div>
+        <div>
+          <h3>Smart Distribution</h3>
+          <p>Uses a First-Fit Decreasing algorithm to assign files to volumes. Each file stays complete — never split across volumes. Volume sizes closely match your target.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">03</div>
+        <div>
+          <h3>Parallel Compression</h3>
+          <p>Each volume is compressed independently on a separate thread. Buffered writes (64MB chunks) with a shared lock prevent disk I/O contention.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">04</div>
+        <div>
+          <h3>Ready to Use</h3>
+          <p>Output includes numbered ZIP volumes plus a batch script for one-click extraction of all parts. Each volume works on its own — share just the parts you need.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ USAGE ═══ -->
+<section id="usage">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Usage Guide</div>
+      <h2 class="section-title">Pack. Extract. Done.</h2>
+    </div>
+    <div class="tabs-wrapper reveal">
+      <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchTab(this, 'pack')">📦 Pack</button>
+        <button class="tab-btn" onclick="switchTab(this, 'unpack')">📂 Extract</button>
+      </div>
+
+      <div id="tab-pack" class="tab-content active">
+        <ol class="usage-list">
+          <li><span class="num">1</span><span><strong>Select source folder</strong> — Choose the folder you want to pack</span></li>
+          <li><span class="num">2</span><span><strong>Select output directory</strong> — Where the volume ZIPs will be saved</span></li>
+          <li><span class="num">3</span><span><strong>Set volume size</strong> — Target size per volume in MB (sizes are approximate to keep files intact)</span></li>
+          <li><span class="num">4</span><span><strong>Set password</strong> (optional) — Enter a password and choose encryption: ZipCrypto for Windows Explorer compatibility, or AES-256 for maximum security</span></li>
+          <li><span class="num">5</span><span><strong>Choose compression level</strong> — Store only, Fast, Normal, or Maximum</span></li>
+          <li><span class="num">6</span><span><strong>Click Start</strong> — Watch the progress bar and log as volumes are packed in parallel</span></li>
+        </ol>
+        <div class="naming-block">
+          <pre><span class="file">MyFolder_part001.zip</span>    ← Volume 1 (independently extractable)
+<span class="file">MyFolder_part002.zip</span>    ← Volume 2 (independently extractable)
+<span class="file">MyFolder_part003.zip</span>    ← Volume 3 (independently extractable)
+<span class="bat">MyFolder_Extract_All.bat</span> ← One-click script to extract everything</pre>
+        </div>
+      </div>
+
+      <div id="tab-unpack" class="tab-content">
+        <ol class="usage-list">
+          <li><span class="num">1</span><span><strong>Select archive file</strong> — Choose any volume ZIP (e.g. <code style="color:var(--accent); background:var(--bg-card); padding:2px 8px; border-radius:4px; font-family:var(--font-mono); font-size:13px;">MyFolder_part001.zip</code>), a 7z file, or a RAR file</span></li>
+          <li><span class="num">2</span><span><strong>Select output directory</strong> — Where to extract the files</span></li>
+          <li><span class="num">3</span><span><strong>Enter password</strong> (if encrypted) — Enter the password used during packing</span></li>
+          <li><span class="num">4</span><span><strong>Click Start</strong> — For ZIP volumes, all matching parts are auto-detected and extracted together</span></li>
+        </ol>
+        <p style="margin-top:24px; color:var(--text-muted); font-size:14px;">
+          💡 You can also double-click the generated <code style="color:var(--accent-amber); background:var(--bg-card); padding:2px 8px; border-radius:4px; font-family:var(--font-mono); font-size:13px;">Extract_All.bat</code> script to extract all volumes at once without opening the app.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SPECS ═══ -->
+<section id="specs">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Specifications</div>
+      <h2 class="section-title">Under the hood.</h2>
+    </div>
+    <div class="specs-grid reveal">
+      <div class="spec-card">
+        <h3>Technical Details</h3>
+        <div class="spec-item">
+          <span class="label">Language</span>
+          <span class="value">Python 3.8+</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">GUI Framework</span>
+          <span class="value">PyQt5</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">ZIP Engine</span>
+          <span class="value">pyzipper</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">7z Engine</span>
+          <span class="value">py7zr</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">RAR Engine</span>
+          <span class="value">rarfile</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Packaging</span>
+          <span class="value">PyInstaller</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">License</span>
+          <span class="spec-tag green">GPL v3</span>
+        </div>
+      </div>
+      <div class="spec-card">
+        <h3>Performance</h3>
+        <div class="spec-item">
+          <span class="label">Threading</span>
+          <span class="value">Auto (CPU cores)</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">I/O Buffer</span>
+          <span class="value">64 MB / thread</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Bin Packing</span>
+          <span class="value">First-Fit Decreasing</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Encryption</span>
+          <span class="spec-tag blue">ZipCrypto / AES-256</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Extract Formats</span>
+          <span class="spec-tag amber">ZIP / 7z / RAR</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Exe Size</span>
+          <span class="value">~45 MB</span>
+        </div>
+        <div class="spec-item">
+          <span class="label">Install Required</span>
+          <span class="value">No</span>
+        </div>
+      </div>
+    </div>
+    <div class="notes-list reveal">
+      <div class="note-item">
+        <span class="note-icon">⚠️</span>
+        <span>Volume sizes are approximate — single files are never split across volumes to ensure each volume is independently usable.</span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">⚠️</span>
+        <span>AES-256 encrypted ZIPs require 7-Zip or WinRAR to extract. Windows Explorer only supports ZipCrypto encryption.</span>
+      </div>
+      <div class="note-item">
+        <span class="note-icon">⚠️</span>
+        <span>Windows SmartScreen may block unsigned executables. Right-click the exe → Properties → check "Unblock" to resolve.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DOWNLOAD ═══ -->
+<section id="download">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Get Started</div>
+      <h2 class="section-title">Download AbaoSplitZip</h2>
+      <p class="section-desc">Free and open source. No account required. No ads. No tracking.</p>
+    </div>
+    <div class="download-buttons reveal">
+      <a href="https://github.com/Xinabao/AbaoSplitZip/releases" class="btn btn-primary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Latest Release
+      </a>
+      <a href="https://github.com/Xinabao/AbaoSplitZip" class="btn btn-secondary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.085 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        Source Code on GitHub
+      </a>
+    </div>
+    <p class="platform-note reveal">Available for Windows &middot; macOS &middot; Linux</p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        © 2025 AbaoSplitZip &middot; Made by <a href="https://www.abaodisk.com">Xinabao</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/Xinabao/AbaoSplitZip" target="_blank">GitHub</a>
+        <a href="https://github.com/Xinabao/AbaoSplitZip/releases" target="_blank">Releases</a>
+        <a href="https://github.com/Xinabao/AbaoSplitZip/blob/master/LICENSE" target="_blank">License (GPL v3)</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tab switching
+  function switchTab(btn, tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
