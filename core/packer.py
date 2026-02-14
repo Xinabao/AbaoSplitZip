@@ -3,7 +3,9 @@ AbaoZip 核心打包逻辑
 将文件夹按指定大小分卷打包为独立可解压的 ZIP 文件
 """
 
+import io
 import os
+import threading
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -24,6 +26,59 @@ ENCRYPTION_METHODS = {
     "ZipCrypto (兼容 Windows 资源管理器)": "zipcrypto",
     "AES-256 (更安全，需第三方解压工具)": "aes256",
 }
+
+
+class BufferedFileWriter:
+    """
+    分块缓冲写入器，作为 ZipFile 的文件对象。
+    在内存中积攒到 chunk_size 后加锁写盘，减少磁盘碎片和 I/O 争抢。
+    """
+
+    def __init__(self, path: str, write_lock: threading.Lock, chunk_size: int = 8 * 1024 * 1024):
+        self._path = path
+        self._lock = write_lock
+        self._chunk_size = chunk_size
+        self._buffer = io.BytesIO()
+        self._file = open(path, "wb")
+        self._pos = 0
+
+    def write(self, data: bytes) -> int:
+        self._buffer.write(data)
+        self._pos += len(data)
+        if self._buffer.tell() >= self._chunk_size:
+            self._flush()
+        return len(data)
+
+    def _flush(self):
+        chunk = self._buffer.getvalue()
+        if chunk:
+            with self._lock:
+                self._file.write(chunk)
+            self._buffer = io.BytesIO()
+
+    def tell(self) -> int:
+        return self._pos
+
+    def seek(self, offset: int, whence: int = 0):
+        # ZipFile 在写入结尾目录时需要 seek
+        self._flush()
+        with self._lock:
+            self._file.seek(offset, whence)
+        if whence == 0:
+            self._pos = offset
+        elif whence == 1:
+            self._pos += offset
+        elif whence == 2:
+            self._pos = self._file.tell()
+
+    def flush(self):
+        self._flush()
+        with self._lock:
+            self._file.flush()
+
+    def close(self):
+        self._flush()
+        self._file.close()
 
 
 @dataclass
@@ -65,6 +120,8 @@ class VolumePacker:
         self.compression_level = comp[1]
 
         self.folder_name = os.path.basename(self.source_dir)
+        # 写盘锁：多线程压缩完成后排队写入磁盘，避免 I/O 争抢和碎片
+        self._write_lock = threading.Lock()
 
     def _log(self, msg: str):
         if self.log_callback:
@@ -111,14 +168,16 @@ class VolumePacker:
         return [vol[1] for vol in volumes]
 
     def _create_zip(self, output_path: str, file_paths: list):
-        """创建单个 ZIP 分卷"""
+        """创建 ZIP 分卷，使用分块缓冲写盘减少碎片"""
+        buf = BufferedFileWriter(output_path, self._write_lock, chunk_size=64 * 1024 * 1024)
+
         if self.password:
             if self.encryption_method == "aes256":
                 encryption = pyzipper.WZ_AES
             else:
                 encryption = pyzipper.ZIP_CRYPTO
             with pyzipper.ZipFile(
-                output_path, "w",
+                buf, "w",
                 compression=self.compression_type,
                 encryption=encryption,
             ) as zf:
@@ -130,9 +189,8 @@ class VolumePacker:
                     arcname = os.path.join(self.folder_name, rel_path)
                     zf.write(full_path, arcname)
         else:
-            # 无密码，使用标准 zipfile
             with zipfile.ZipFile(
-                output_path, "w",
+                buf, "w",
                 compression=self.compression_type,
                 compresslevel=self.compression_level if self.compression_type == zipfile.ZIP_DEFLATED else None,
             ) as zf:
@@ -140,6 +198,8 @@ class VolumePacker:
                     full_path = os.path.join(self.source_dir, rel_path)
                     arcname = os.path.join(self.folder_name, rel_path)
                     zf.write(full_path, arcname)
+
+        buf.close()
 
     def _pack_one_volume(self, i: int, total: int, vol_files: list):
         """打包单个分卷（供线程池调用）"""

@@ -94,8 +94,8 @@ class MainWindow(QMainWindow):
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
 
-        desc = QLabel("将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。\n"
-                      "打包完成后会同时生成「一键全部解压.bat」脚本，如需一次性解压所有分卷请运行该脚本。")
+        desc = QLabel('将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。<br>'
+                      '<b style="color: red;">打包完成后会同时生成「一键全部解压.bat」脚本，如需一次性解压所有分卷请运行该脚本。</b>')
         desc.setAlignment(Qt.AlignCenter)
         desc.setWordWrap(True)
         desc.setStyleSheet("color: #666; margin-bottom: 6px;")
