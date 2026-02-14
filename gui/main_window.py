@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
 )
 
 from core.packer import COMPRESSION_LEVELS, VolumePacker
-from core.unpacker import VolumeUnpacker
+from core.unpacker import VolumeUnpacker, get_file_filter, SUPPORTED_EXTENSIONS
 from core.i18n import t, set_language, get_language, detect_system_language, LANGUAGES
 
 # Mapping from i18n key to the original Chinese key used in COMPRESSION_LEVELS
@@ -200,7 +200,7 @@ class MainWindow(QMainWindow):
         self.size_spin.setFixedWidth(120)
         size_row.addWidget(self.size_spin)
         size_hint = QLabel(t("hint_volume_size"))
-        size_hint.setStyleSheet("color: #888; font-size: 11px;")
+        size_hint.setStyleSheet("color: #888; font-size: 13px;")
         size_row.addWidget(size_hint)
         size_row.addStretch()
         settings_layout.addLayout(size_row)
@@ -233,11 +233,11 @@ class MainWindow(QMainWindow):
         self.radio_zipcrypto = QRadioButton("ZipCrypto")
         self.radio_zipcrypto.setChecked(True)
         zipcrypto_hint = QLabel(t("enc_zipcrypto"))
-        zipcrypto_hint.setStyleSheet("color: #888; font-size: 11px;")
+        zipcrypto_hint.setStyleSheet("color: #888; font-size: 13px;")
 
         self.radio_aes = QRadioButton("AES-256")
         aes_hint = QLabel(t("enc_aes"))
-        aes_hint.setStyleSheet("color: #888; font-size: 11px;")
+        aes_hint.setStyleSheet("color: #888; font-size: 13px;")
 
         enc_row1 = QHBoxLayout()
         enc_row1.addWidget(self.radio_zipcrypto)
@@ -284,8 +284,18 @@ class MainWindow(QMainWindow):
 
         desc = QLabel(t("unpack_desc"))
         desc.setWordWrap(True)
-        desc.setStyleSheet("color: #666; font-size: 11px; margin-bottom: 8px;")
+        desc.setStyleSheet("color: #666; font-size: 13px; margin-bottom: 8px;")
         layout.addWidget(desc)
+
+        # 支持格式提示
+        fmt_parts = ["ZIP"]
+        if ".7z" in SUPPORTED_EXTENSIONS:
+            fmt_parts.append("7z")
+        if ".rar" in SUPPORTED_EXTENSIONS:
+            fmt_parts.append("RAR")
+        fmt_label = QLabel(t("unpack_formats") + " " + " / ".join(fmt_parts))
+        fmt_label.setStyleSheet("color: #0078d4; font-size: 13px; font-weight: bold; margin-bottom: 4px;")
+        layout.addWidget(fmt_label)
 
         # 路径设置
         path_group = QGroupBox(t("group_paths"))
@@ -407,7 +417,7 @@ class MainWindow(QMainWindow):
 
     def _browse_zip(self):
         path, _ = QFileDialog.getOpenFileName(
-            self, t("dialog_select_zip"), "", t("dialog_zip_filter"))
+            self, t("dialog_select_zip"), "", get_file_filter())
         if path:
             self.unpack_zip_edit.setText(path)
 
@@ -464,7 +474,7 @@ class MainWindow(QMainWindow):
         output = self.unpack_output_edit.text().strip()
 
         if not zip_path or not os.path.isfile(zip_path):
-            QMessageBox.warning(self, t("msg_hint"), t("msg_select_zip"))
+            QMessageBox.warning(self, t("msg_hint"), t("msg_select_archive"))
             return
         if not output:
             QMessageBox.warning(self, t("msg_hint"), t("msg_select_output"))

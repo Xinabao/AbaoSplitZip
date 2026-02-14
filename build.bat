@@ -1,5 +1,5 @@
 @echo off
-echo === AbaoZip Build ===
+echo === AbaoSplitZip Build ===
 echo.
 echo Installing dependencies...
 pip install -r requirements.txt --quiet
@@ -14,12 +14,12 @@ for /f "tokens=*" %%P in ('python -c "import sys,os;print(os.path.dirname(sys.ex
 )
 echo.
 echo Creating release package...
-mkdir "%SCRIPT_DIR%\dist\AbaoZip_Release" 2>nul
-copy /Y "%SCRIPT_DIR%\dist\AbaoZip.exe" "%SCRIPT_DIR%\dist\AbaoZip_Release\" >nul
-copy /Y "%SCRIPT_DIR%\resources\使用说明.txt" "%SCRIPT_DIR%\dist\AbaoZip_Release\" >nul
-powershell -Command "Compress-Archive -Path '%SCRIPT_DIR%\dist\AbaoZip_Release\*' -DestinationPath '%SCRIPT_DIR%\dist\AbaoZip_v1.0.0.zip' -Force"
+mkdir "%SCRIPT_DIR%\dist\AbaoSplitZip_Release" 2>nul
+copy /Y "%SCRIPT_DIR%\dist\AbaoSplitZip.exe" "%SCRIPT_DIR%\dist\AbaoSplitZip_Release\" >nul
+copy /Y "%SCRIPT_DIR%\resources\使用说明.txt" "%SCRIPT_DIR%\dist\AbaoSplitZip_Release\" >nul
+powershell -Command "Compress-Archive -Path '%SCRIPT_DIR%\dist\AbaoSplitZip_Release\*' -DestinationPath '%SCRIPT_DIR%\dist\AbaoSplitZip_v1.1.0.zip' -Force"
 echo.
 echo Done!
-echo   EXE: dist\AbaoZip.exe
-echo   Release: dist\AbaoZip_v1.0.0.zip
+echo   EXE: dist\AbaoSplitZip.exe
+echo   Release: dist\AbaoSplitZip_v1.1.0.zip
 pause
