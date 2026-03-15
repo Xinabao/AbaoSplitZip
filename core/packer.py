@@ -101,6 +101,8 @@ class VolumePacker:
         password: Optional[str] = None,
         compression_name: str = "标准压缩",
         encryption_method: str = "zipcrypto",
+        mode: str = "size_balanced",  # New parameter
+        exclude_patterns: list = None, # New parameter
         progress_callback=None,
         log_callback=None,
         cancel_check=None,
@@ -111,6 +113,8 @@ class VolumePacker:
         self.password = password.encode("utf-8") if password else None
         self.compression_name = compression_name
         self.encryption_method = encryption_method
+        self.mode = mode
+        self.exclude_patterns = exclude_patterns or []
         self.progress_callback = progress_callback
         self.log_callback = log_callback
         self.cancel_check = cancel_check
@@ -136,36 +140,94 @@ class VolumePacker:
             return self.cancel_check()
         return False
 
-    def scan_files(self) -> list:
+    def scan_files(self) -> tuple:
         """扫描源文件夹，返回 (相对路径, 文件大小) 列表"""
+        import fnmatch
         file_list = []
+        max_file_size = 0
+        
         for root, _dirs, files in os.walk(self.source_dir):
             for fname in files:
                 full_path = os.path.join(root, fname)
                 rel_path = os.path.relpath(full_path, self.source_dir)
+                
+                # Check exclude patterns
+                if any(fnmatch.fnmatch(rel_path, pat) for pat in self.exclude_patterns):
+                    continue
+                    
                 size = os.path.getsize(full_path)
                 file_list.append((rel_path, size))
-        # 按大小降序排列，大文件优先分配（贪心装箱）
-        file_list.sort(key=lambda x: x[1], reverse=True)
-        return file_list
+                if size > max_file_size:
+                    max_file_size = size
+        
+        if self.mode == "size_balanced":
+            # 按大小降序排列，大文件优先分配（贪心装箱 - FFD）
+            # 优点：分卷数量最少
+            # 缺点：打乱了目录结构
+            file_list.sort(key=lambda x: x[1], reverse=True)
+        else:
+            # directory_priority
+            # 按路径名字母顺序排列，保持目录结构
+            # 优点：同一目录下的文件尽可能在同一卷
+            # 缺点：可能产生更多分卷（尾部空间浪费）
+            file_list.sort(key=lambda x: x[0])
+            
+        return file_list, max_file_size
 
     def assign_volumes(self, file_list: list) -> list:
         """
-        将文件分配到各分卷（首次适配递减算法）
+        将文件分配到各分卷
         返回: [ [rel_path, ...], ... ] 每卷包含的文件列表
         """
-        volumes = []       # 每个元素: [当前大小, [文件列表]]
-        for rel_path, size in file_list:
-            placed = False
-            for vol in volumes:
-                if vol[0] + size <= self.volume_size_bytes:
-                    vol[0] += size
-                    vol[1].append(rel_path)
-                    placed = True
-                    break
-            if not placed:
-                volumes.append([size, [rel_path]])
-        return [vol[1] for vol in volumes]
+        if self.mode == "size_balanced":
+            # First Fit Decreasing (FFD)
+            volumes = []       # 每个元素: [当前大小, [文件列表]]
+            for rel_path, size in file_list:
+                placed = False
+                for vol in volumes:
+                    if vol[0] + size <= self.volume_size_bytes:
+                        vol[0] += size
+                        vol[1].append(rel_path)
+                        placed = True
+                        break
+                if not placed:
+                    volumes.append([size, [rel_path]])
+            return [vol[1] for vol in volumes]
+        else:
+            # Next Fit (保持顺序)
+            # 依次放入当前卷，放不下就开新卷
+            volumes = []
+            current_vol_files = []
+            current_vol_size = 0
+            
+            for rel_path, size in file_list:
+                # 如果单个文件超过卷大小，必须单独放一卷（或者报错，这里选择单独放）
+                if size > self.volume_size_bytes:
+                    # 如果当前卷有内容，先封卷
+                    if current_vol_files:
+                        volumes.append(current_vol_files)
+                        current_vol_files = []
+                        current_vol_size = 0
+                    # 大文件单独一卷
+                    volumes.append([rel_path])
+                    continue
+                
+                if current_vol_size + size <= self.volume_size_bytes:
+                    current_vol_files.append(rel_path)
+                    current_vol_size += size
+                else:
+                    # 放不下，封卷
+                    if current_vol_files:
+                        volumes.append(current_vol_files)
+                    # 开新卷
+                    current_vol_files = [rel_path]
+                    current_vol_size = size
+            
+            # 最后一卷
+            if current_vol_files:
+                volumes.append(current_vol_files)
+                
+            return volumes
 
     def _create_zip(self, output_path: str, file_paths: list):
         """创建 ZIP 分卷，使用分块缓冲写盘减少碎片"""
@@ -214,7 +276,12 @@ class VolumePacker:
         result = PackResult()
 
         self._log("正在扫描文件夹...")
-        file_list = self.scan_files()
+        file_list, max_file_size = self.scan_files()
+        
+        # Check for large files
+        if max_file_size > self.volume_size_bytes:
+             self._log(f"警告：检测到文件大小 ({max_file_size / 1024 / 1024:.1f} MB) 超过分卷大小。该文件将不会被分割，所在分卷将超出预设大小。")
+
         if not file_list:
             self._log("错误：源文件夹为空，没有可打包的文件。")
             return result

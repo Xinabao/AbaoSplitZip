@@ -27,17 +27,21 @@ a = Analysis(
 
 pyz = PYZ(a.pure)
 
+# Version info only on Windows
+version_file = 'version_info.txt' if sys.platform == 'win32' else None
+
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
     a.datas,
     [],
-    name='AbaoSplitZip',
+    name='AbaoZip',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     console=False,
     icon=icon_file,
+    version=version_file,
 )

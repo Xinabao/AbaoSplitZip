@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  🌐 <a href="https://www.abaodisk.com/AbaoSplitZip">Official Website / 官方网站</a>
+  🌐 <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">Official Website / 官方网站</a>
 </p>
 
 <p align="center">
@@ -38,6 +38,9 @@
 ### Features
 
 - 📦 **Independent Volume Extraction** — Each volume is a complete ZIP, no merging required
+- 📂 **Directory Priority Mode** — Option to keep folder structures intact across volumes
+- 🚫 **File Exclusion** — Exclude files by pattern (e.g. `*.tmp`, `.git`)
+- 🖱️ **Drag & Drop** — Easy file selection with modern UI
 - 🔐 **Dual Encryption** — ZipCrypto (Windows Explorer compatible) or AES-256 (requires 7-Zip/WinRAR)
 - ⚡ **Multi-threaded Packing** — Parallel compression with 64MB buffered I/O
 - 📂 **Multi-format Extraction** — Extract ZIP, 7z, and RAR archives
@@ -46,7 +49,7 @@
 
 ### Quick Start
 
-Download from [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) or [Official Website](https://www.abaodisk.com/AbaoSplitZip), or run from source:
+Download from [Releases](https://github.com/Xinabao/AbaoZip/releases) or [Official Website](https://www.aboutdisk.com/AbaoSoftware/Abaozip), or run from source:
 
 ```bash
 git clone https://github.com/Xinabao/AbaoSplitZip.git
@@ -59,26 +62,28 @@ python main.py
 
 ## 🇨🇳 简体中文
 
-**AbaoSplitZip** — 将大文件夹按指定大小分卷打包，**每个分卷都是独立的 ZIP 文件**，可单独解压，无需合并。
+**AbaoZip** (原 AbaoSplitZip) — 将大文件夹按指定大小分卷打包，**每个分卷都是独立的 ZIP 文件**，可单独解压，无需合并。
 
 **搜索关键词**：分卷压缩 独立解压、大文件 分割 单独解压、ZIP 分卷 每卷独立、文件分割打包工具、分卷压缩包 不用合并 直接解压
 
 ### 功能特性
 
 - 📦 **分卷独立解压** — 每个分卷都是完整的 ZIP，无需合并即可独立解压
-- 🔐 **双加密模式** — ZipCrypto（兼容 Windows 10/11 资源管理器直接解压）或 AES-256（更安全）
-- ⚡ **多线程并行压缩** — 64MB 缓冲写盘，减少磁盘碎片
+- 📂 **目录优先模式** — 智能保持子文件夹结构完整
+- 🔗 **一键合并解压** — 选择任意分卷即可自动识别并解压全部关联分卷
+- 🔐 **双加密模式** — ZipCrypto（兼容 Windows 资源管理器）或 AES-256（更安全）
+- ⚡ **多线程并行压缩** — 利用多核 CPU 加速打包
+- 🖱️ **拖拽支持** — 支持文件/文件夹拖拽输入
 - 📂 **多格式解压** — 支持解压 ZIP、7z、RAR
 - 🌍 **9 种语言** — 自动检测系统语言
-- 💻 **跨平台** — Windows / macOS / Linux
 
 ### 使用方法
 
-从 [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 或 [官方网站](https://www.abaodisk.com/AbaoSplitZip) 下载，或从源码运行：
+从 [Releases](https://github.com/Xinabao/AbaoZip/releases) 或 [官方网站](https://www.aboutdisk.com/AbaoSoftware/Abaozip) 下载，或从源码运行：
 
 ```bash
-git clone https://github.com/Xinabao/AbaoSplitZip.git
-cd AbaoSplitZip
+git clone https://github.com/Xinabao/AbaoZip.git
+cd AbaoZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -88,9 +93,15 @@ python main.py
 ### 打包操作
 
 1. 选择源文件夹 → 选择输出目录 → 设置分卷大小（MB）
-2. 可选：设置密码 + 选择加密方式（ZipCrypto / AES-256）
-3. 选择压缩级别 → 开始打包
-4. 完成后自动生成「一键全部解压.bat」脚本
+2. 选择模式（体积均衡 / 目录优先）
+3. 可选：设置密码 + 选择加密方式
+4. 开始打包
+
+### 合并解压
+
+1. 切换到“合并解压”标签页
+2. 拖入任意一个分卷文件 (.zip)
+3. 点击“开始合并解压”，软件会自动寻找同目录下的其他分卷并解压
 
 ### 命名格式
 
@@ -217,16 +228,26 @@ MyFolder_一键全部解压.bat
 
 ## 🔧 Build / 构建
 
-```bash
-# Build exe (Windows)
+### Windows
+Double-click `build.bat` or run:
+```cmd
 build.bat
+```
 
-# Or manually on any platform
+### macOS / Linux
+Run the shell script:
+```bash
+chmod +x build.sh
+./build.sh
+```
+
+### Manual Build
+```bash
 pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoSplitZip` (~40 MB)
+Output: `dist/AbaoZip` (or `AbaoZip.exe`)
 
 ## ⚠️ Notes / 注意事项
 

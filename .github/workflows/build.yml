@@ -8,20 +8,20 @@ on:
 
 jobs:
   build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
           - os: windows-latest
-            artifact: AbaoSplitZip-Windows
-            exe_ext: .exe
-          - os: ubuntu-22.04
-            artifact: AbaoSplitZip-Linux
-            exe_ext: ""
+            artifact_name: AbaoZip-Windows
+            exe_name: AbaoZip.exe
+          - os: ubuntu-20.04
+            artifact_name: AbaoZip-Linux
+            exe_name: AbaoZip
           - os: macos-latest
-            artifact: AbaoSplitZip-macOS
-            exe_ext: ""
-
-    runs-on: ${{ matrix.os }}
+            artifact_name: AbaoZip-macOS
+            exe_name: AbaoZip
 
     steps:
       - uses: actions/checkout@v4
@@ -29,43 +29,63 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Linux libs (if Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb-cursor0
 
       - name: Build with PyInstaller
-        run: python -m PyInstaller build.spec --clean --noconfirm
+        run: |
+          python -m PyInstaller build.spec --clean --noconfirm
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: dist/AbaoSplitZip${{ matrix.exe_ext }}
+          name: ${{ matrix.artifact_name }}
+          path: dist/${{ matrix.exe_name }}
 
   release:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
-
     permissions:
       contents: write
 
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
-      - name: Package releases
+      - name: Prepare Release Assets
         run: |
-          cd AbaoSplitZip-Windows && zip ../AbaoSplitZip-Windows.zip * && cd ..
-          cd AbaoSplitZip-Linux && chmod +x AbaoSplitZip && tar czf ../AbaoSplitZip-Linux.tar.gz * && cd ..
-          cd AbaoSplitZip-macOS && chmod +x AbaoSplitZip && tar czf ../AbaoSplitZip-macOS.tar.gz * && cd ..
+          mkdir -p release
+          
+          # Windows
+          cp artifacts/AbaoZip-Windows/AbaoZip.exe release/
+          cd release && zip AbaoZip-Windows.zip AbaoZip.exe && rm AbaoZip.exe && cd ..
+          
+          # Linux
+          cp artifacts/AbaoZip-Linux/AbaoZip release/
+          cd release && chmod +x AbaoZip && tar czf AbaoZip-Linux.tar.gz AbaoZip && rm AbaoZip && cd ..
+          
+          # macOS
+          cp artifacts/AbaoZip-macOS/AbaoZip release/
+          cd release && chmod +x AbaoZip && tar czf AbaoZip-macOS.tar.gz AbaoZip && rm AbaoZip && cd ..
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            AbaoSplitZip-Windows.zip
-            AbaoSplitZip-Linux.tar.gz
-            AbaoSplitZip-macOS.tar.gz
+            release/AbaoZip-Windows.zip
+            release/AbaoZip-Linux.tar.gz
+            release/AbaoZip-macOS.tar.gz
           generate_release_notes: true

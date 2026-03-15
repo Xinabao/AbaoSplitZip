@@ -18,27 +18,93 @@ LANGUAGES = {
 }
 
 TEXTS = {
+    "label_mode": {
+        "zh": "打包模式:",
+        "zh_TW": "打包模式:",
+        "en": "Packing Mode:",
+        "ja": "パッキングモード:",
+        "ko": "포장 모드:",
+        "de": "Packmodus:",
+        "fr": "Mode d'emballage:",
+        "es": "Modo de embalaje:",
+        "pt": "Modo de embalagem:",
+    },
+    "mode_size": {
+        "zh": "大小均衡 (最少分卷)",
+        "zh_TW": "大小均衡 (最少分卷)",
+        "en": "Size Balanced (Min Volumes)",
+        "ja": "サイズバランス (最小巻数)",
+        "ko": "크기 균형 (최소 볼륨)",
+        "de": "Größenausgleich (Min. Volumen)",
+        "fr": "Équilibre de taille (Vol. Min)",
+        "es": "Equilibrio de tamaño (Vol. Mín)",
+        "pt": "Equilíbrio de tamanho (Vol. Mín)",
+    },
+    "mode_dir": {
+        "zh": "目录优先 (保持结构)",
+        "zh_TW": "目錄優先 (保持結構)",
+        "en": "Directory Priority (Keep Folder Structure)",
+        "ja": "ディレクトリ優先 (構造保持)",
+        "ko": "디렉터리 우선 (구조 유지)",
+        "de": "Verzeichnispriorität (Struktur behalten)",
+        "fr": "Priorité répertoire (Garder structure)",
+        "es": "Prioridad directorio (Mantener estructura)",
+        "pt": "Prioridade diretório (Manter estrutura)",
+    },
+    "label_exclude": {
+        "zh": "排除文件:",
+        "zh_TW": "排除檔案:",
+        "en": "Exclude Files:",
+        "ja": "除外ファイル:",
+        "ko": "제외 파일:",
+        "de": "Dateien ausschließen:",
+        "fr": "Exclure fichiers:",
+        "es": "Excluir archivos:",
+        "pt": "Excluir arquivos:",
+    },
+    "hint_exclude": {
+        "zh": "例如: *.git, *.tmp (逗号分隔)",
+        "zh_TW": "例如: *.git, *.tmp (逗號分隔)",
+        "en": "e.g. *.git, *.tmp (comma separated)",
+        "ja": "例: *.git, *.tmp (カンマ区切り)",
+        "ko": "예: *.git, *.tmp (쉼표 구분)",
+        "de": "z.B. *.git, *.tmp (kommagetrennt)",
+        "fr": "ex. *.git, *.tmp (séparé par virgule)",
+        "es": "ej. *.git, *.tmp (separado por comas)",
+        "pt": "ex. *.git, *.tmp (separado por vírgula)",
+    },
+    "btn_open_folder": {
+        "zh": "打开输出文件夹",
+        "zh_TW": "打開輸出資料夾",
+        "en": "Open Output Folder",
+        "ja": "出力フォルダを開く",
+        "ko": "출력 폴더 열기",
+        "de": "Ausgabeordner öffnen",
+        "fr": "Ouvrir dossier sortie",
+        "es": "Abrir carpeta salida",
+        "pt": "Abrir pasta saída",
+    },
     "app_title": {
-        "zh": "AbaoSplitZip — 分卷独立解压打包工具",
-        "zh_TW": "AbaoSplitZip — 分卷獨立解壓打包工具",
-        "en": "AbaoSplitZip — Volume Packer with Independent Extraction",
-        "ja": "AbaoSplitZip — 分割独立解凍パッカー",
-        "ko": "AbaoSplitZip — 분할 독립 압축 해제 도구",
-        "de": "AbaoSplitZip — Volumen-Packer mit unabhängiger Extraktion",
-        "fr": "AbaoSplitZip — Empaqueteur par volumes avec extraction indépendante",
-        "es": "AbaoSplitZip — Empaquetador por volúmenes con extracción independiente",
-        "pt": "AbaoSplitZip — Empacotador por volumes com extração independente",
+        "zh": "AbaoZip — 分卷独立解压打包工具",
+        "zh_TW": "AbaoZip — 分卷獨立解壓打包工具",
+        "en": "AbaoZip — Volume Packer with Independent Extraction",
+        "ja": "AbaoZip — 分割独立解凍パッカー",
+        "ko": "AbaoZip — 분할 독립 압축 해제 도구",
+        "de": "AbaoZip — Volumen-Packer mit unabhängiger Extraktion",
+        "fr": "AbaoZip — Empaqueteur par volumes avec extraction indépendante",
+        "es": "AbaoZip — Empaquetador por volúmenes con extracción independiente",
+        "pt": "AbaoZip — Empacotador por volumes com extração independente",
     },
     "header_title": {
-        "zh": "AbaoSplitZip 分卷打包工具",
-        "zh_TW": "AbaoSplitZip 分卷打包工具",
-        "en": "AbaoSplitZip Volume Packer",
-        "ja": "AbaoSplitZip 分割パッカー",
-        "ko": "AbaoSplitZip 분할 압축 도구",
-        "de": "AbaoSplitZip Volumen-Packer",
-        "fr": "AbaoSplitZip Empaqueteur par volumes",
-        "es": "AbaoSplitZip Empaquetador por volúmenes",
-        "pt": "AbaoSplitZip Empacotador por volumes",
+        "zh": "AbaoZip 分卷打包工具",
+        "zh_TW": "AbaoZip 分卷打包工具",
+        "en": "AbaoZip Volume Packer",
+        "ja": "AbaoZip 分割パッカー",
+        "ko": "AbaoZip 분할 압축 도구",
+        "de": "AbaoZip Volumen-Packer",
+        "fr": "AbaoZip Empaqueteur par volumes",
+        "es": "AbaoZip Empaquetador por volúmenes",
+        "pt": "AbaoZip Empacotador por volumes",
     },
     "header_desc": {
         "zh": "将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。",
@@ -83,6 +149,184 @@ TEXTS = {
         "fr": "📂 Extraire",
         "es": "📂 Extraer",
         "pt": "📂 Extrair",
+    },
+    "tab_merge": {
+        "zh": "🔗 合并解压",
+        "zh_TW": "🔗 合併解壓",
+        "en": "🔗 Merge & Extract",
+        "ja": "🔗 結合解凍",
+        "ko": "🔗 병합 및 추출",
+        "de": "🔗 Zusammenführen",
+        "fr": "🔗 Fusionner",
+        "es": "🔗 Fusionar",
+        "pt": "🔗 Mesclar",
+    },
+    "merge_desc": {
+        "zh": "选择任意一个分卷 (.zip)，软件会自动查找同目录下的所有分卷并合并解压。",
+        "zh_TW": "選擇任意一個分卷 (.zip)，軟體會自動尋找同目錄下的所有分卷並合併解壓。",
+        "en": "Select any volume (.zip). The tool will automatically find and merge all related volumes in the same folder.",
+        "ja": "任意のボリューム (.zip) を選択。同じフォルダ内の全ボリュームを自動検出し結合解凍します。",
+        "ko": "임의의 볼륨 (.zip) 선택. 같은 폴더 내의 모든 볼륨을 자동으로 찾아 병합 해제합니다.",
+        "de": "Wählen Sie ein beliebiges Volumen (.zip). Das Tool findet und extrahiert automatisch alle Teile.",
+        "fr": "Sélectionnez n'importe quel volume (.zip). L'outil fusionnera tout le reste.",
+        "es": "Seleccione cualquier volumen (.zip). La herramienta fusionará todo lo demás.",
+        "pt": "Selecione qualquer volume (.zip). A ferramenta mesclará todo o resto.",
+    },
+    "label_select_part": {
+        "zh": "选择分卷:",
+        "zh_TW": "選擇分卷:",
+        "en": "Select Part:",
+        "ja": "ボリューム選択:",
+        "ko": "볼륨 선택:",
+        "de": "Volumen wählen:",
+        "fr": "Choisir volume:",
+        "es": "Elegir volumen:",
+        "pt": "Escolher volume:",
+    },
+    "hint_select_part": {
+        "zh": "选择任意一个分卷文件...",
+        "zh_TW": "選擇任意一個分卷檔案...",
+        "en": "Select any volume file...",
+        "ja": "任意のボリュームファイルを選択...",
+        "ko": "임의의 볼륨 파일 선택...",
+        "de": "Beliebige Volumendatei auswählen...",
+        "fr": "Sélectionnez un fichier volume...",
+        "es": "Seleccione un archivo de volumen...",
+        "pt": "Selecione um arquivo de volume...",
+    },
+    "btn_start_merge": {
+        "zh": "开始合并解压",
+        "zh_TW": "開始合併解壓",
+        "en": "Start Merge & Extract",
+        "ja": "結合解凍開始",
+        "ko": "병합 해제 시작",
+        "de": "Zusammenführen starten",
+        "fr": "Lancer fusion",
+        "es": "Iniciar fusión",
+        "pt": "Iniciar mesclagem",
+    },
+    "btn_about": {
+        "zh": "关于 / 帮助",
+        "zh_TW": "關於 / 幫助",
+        "en": "About / Help",
+        "ja": "バージョン / ヘルプ",
+        "ko": "정보 / 도움말",
+        "de": "Über / Hilfe",
+        "fr": "À propos / Aide",
+        "es": "Acerca de / Ayuda",
+        "pt": "Sobre / Ajuda",
+    },
+    "about_title": {
+        "zh": "关于 AbaoZip",
+        "zh_TW": "關於 AbaoZip",
+        "en": "About AbaoZip",
+        "ja": "AbaoZipについて",
+        "ko": "AbaoZip 정보",
+        "de": "Über AbaoZip",
+        "fr": "À propos de AbaoZip",
+        "es": "Acerca de AbaoZip",
+        "pt": "Sobre o AbaoZip",
+    },
+    "about_content": {
+        "zh": """<h3>AbaoZip v1.2.0</h3>
+<p>一款支持独立解压的分卷打包工具。</p>
+<p>🌐 <b>官方网站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>使用帮助:</b>
+<ul>
+<li><b>打包:</b> 拖入文件夹，设置分卷大小，点击开始。</li>
+<li><b>解压:</b> 拖入 ZIP 文件，点击解压。</li>
+<li><b>合并:</b> 拖入任意分卷 (.zip)，自动合并解压所有关联分卷。</li>
+</ul>
+<p>开源协议: GPL v3</p>""",
+        "zh_TW": """<h3>AbaoZip v1.2.0</h3>
+<p>一款支援獨立解壓的分卷打包工具。</p>
+<p>🌐 <b>官方網站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>使用幫助:</b>
+<ul>
+<li><b>打包:</b> 拖入資料夾，設定分卷大小，點擊開始。</li>
+<li><b>解壓:</b> 拖入 ZIP 檔案，點擊解壓。</li>
+<li><b>合併:</b> 拖入任意分卷 (.zip)，自動合併解壓所有關聯分卷。</li>
+</ul>
+<p>開源協議: GPL v3</p>""",
+        "en": """<h3>AbaoZip v1.2.0</h3>
+<p>A volume packer with independent extraction support.</p>
+<p>🌐 <b>Official Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>Quick Help:</b>
+<ul>
+<li><b>Pack:</b> Drag & drop folder, set volume size, click Start.</li>
+<li><b>Extract:</b> Drag & drop ZIP file, click Extract.</li>
+<li><b>Merge:</b> Drag any volume (.zip), it will auto-merge and extract all parts.</li>
+</ul>
+<p>License: GPL v3</p>""",
+        "ja": """<h3>AbaoZip v1.2.0</h3>
+<p>独立解凍をサポートする分割パッカー。</p>
+<p>🌐 <b>公式サイト:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>ヘルプ:</b>
+<ul>
+<li><b>パック:</b> フォルダをドラッグ、サイズ設定、開始をクリック。</li>
+<li><b>解凍:</b> ZIPをドラッグ、解凍をクリック。</li>
+<li><b>結合:</b> 任意の分巻(.zip)をドラッグ、全パーツを自動結合解凍。</li>
+</ul>
+<p>ライセンス: GPL v3</p>""",
+        "ko": """<h3>AbaoZip v1.2.0</h3>
+<p>독립 압축 해제를 지원하는 분할 압축 도구입니다.</p>
+<p>🌐 <b>공식 웹사이트:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>도움말:</b>
+<ul>
+<li><b>압축:</b> 폴더 드래그, 볼륨 크기 설정, 시작 클릭.</li>
+<li><b>해제:</b> ZIP 파일 드래그, 해제 클릭.</li>
+<li><b>병합:</b> 임의의 볼륨(.zip) 드래그, 전체 자동 병합 해제.</li>
+</ul>
+<p>라이선스: GPL v3</p>""",
+        "de": """<h3>AbaoZip v1.2.0</h3>
+<p>Ein Volumen-Packer mit unabhängiger Extraktion.</p>
+<p>🌐 <b>Offizielle Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>Hilfe:</b>
+<ul>
+<li><b>Packen:</b> Ordner ziehen, Größe einstellen, Start klicken.</li>
+<li><b>Entpacken:</b> ZIP ziehen, Entpacken klicken.</li>
+<li><b>Zusammenführen:</b> Beliebiges Volumen (.zip) ziehen, alles automatisch zusammenführen.</li>
+</ul>
+<p>Lizenz: GPL v3</p>""",
+        "fr": """<h3>AbaoZip v1.2.0</h3>
+<p>Un empaqueteur de volumes avec extraction indépendante.</p>
+<p>🌐 <b>Site officiel:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>Aide:</b>
+<ul>
+<li><b>Empaqueter:</b> Glisser le dossier, définir la taille, cliquer sur Démarrer.</li>
+<li><b>Extraire:</b> Glisser le ZIP, cliquer sur Extraire.</li>
+<li><b>Fusionner:</b> Glisser un volume (.zip), fusion automatique.</li>
+</ul>
+<p>Licence: GPL v3</p>""",
+        "es": """<h3>AbaoZip v1.2.0</h3>
+<p>Un empaquetador de volúmenes con extracción independiente.</p>
+<p>🌐 <b>Sitio web oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>Ayuda:</b>
+<ul>
+<li><b>Empaquetar:</b> Arrastrar carpeta, establecer tamaño, clic en Iniciar.</li>
+<li><b>Extraer:</b> Arrastrar ZIP, clic en Extraer.</li>
+<li><b>Fusionar:</b> Arrastrar volumen (.zip), fusión automática.</li>
+</ul>
+<p>Licencia: GPL v3</p>""",
+        "pt": """<h3>AbaoZip v1.2.0</h3>
+<p>Um empacotador de volumes com extração independente.</p>
+<p>🌐 <b>Site oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<hr>
+<b>Ajuda:</b>
+<ul>
+<li><b>Empacotar:</b> Arrastar pasta, definir tamanho, clicar em Iniciar.</li>
+<li><b>Extrair:</b> Arrastar ZIP, clicar em Extrair.</li>
+<li><b>Mesclar:</b> Arrastar volume (.zip), mesclagem automática.</li>
+</ul>
+<p>Licença: GPL v3</p>""",
     },
     "group_paths": {
         "zh": "路径设置",
