@@ -230,7 +230,7 @@ TEXTS = {
     "about_content": {
         "zh": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>一款支持独立解压的分卷打包工具。</p>
-<p>🌐 <b>官方网站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>官方网站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>使用帮助:</b>
 <ul>
@@ -241,7 +241,7 @@ TEXTS = {
 <p>开源协议: GPL v3</p>""",
         "zh_TW": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>一款支援獨立解壓的分卷打包工具。</p>
-<p>🌐 <b>官方網站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>官方網站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>使用幫助:</b>
 <ul>
@@ -252,7 +252,7 @@ TEXTS = {
 <p>開源協議: GPL v3</p>""",
         "en": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>A volume packer with independent extraction support.</p>
-<p>🌐 <b>Official Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>Official Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>Quick Help:</b>
 <ul>
@@ -263,7 +263,7 @@ TEXTS = {
 <p>License: GPL v3</p>""",
         "ja": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>独立解凍をサポートする分割パッカー。</p>
-<p>🌐 <b>公式サイト:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>公式サイト:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>ヘルプ:</b>
 <ul>
@@ -274,7 +274,7 @@ TEXTS = {
 <p>ライセンス: GPL v3</p>""",
         "ko": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>독립 압축 해제를 지원하는 분할 압축 도구입니다.</p>
-<p>🌐 <b>공식 웹사이트:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>공식 웹사이트:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>도움말:</b>
 <ul>
@@ -285,7 +285,7 @@ TEXTS = {
 <p>라이선스: GPL v3</p>""",
         "de": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>Ein Volumen-Packer mit unabhängiger Extraktion.</p>
-<p>🌐 <b>Offizielle Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>Offizielle Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>Hilfe:</b>
 <ul>
@@ -296,7 +296,7 @@ TEXTS = {
 <p>Lizenz: GPL v3</p>""",
         "fr": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>Un empaqueteur de volumes avec extraction indépendante.</p>
-<p>🌐 <b>Site officiel:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>Site officiel:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>Aide:</b>
 <ul>
@@ -307,7 +307,7 @@ TEXTS = {
 <p>Licence: GPL v3</p>""",
         "es": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>Un empaquetador de volúmenes con extracción independiente.</p>
-<p>🌐 <b>Sitio web oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>Sitio web oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>Ayuda:</b>
 <ul>
@@ -318,7 +318,7 @@ TEXTS = {
 <p>Licencia: GPL v3</p>""",
         "pt": """<h3>AbaoSplitZip v1.2.0</h3>
 <p>Um empacotador de volumes com extração independente.</p>
-<p>🌐 <b>Site oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">www.aboutdisk.com/AbaoSoftware/Abaozip</a></p>
+<p>🌐 <b>Site oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
 <hr>
 <b>Ajuda:</b>
 <ul>
