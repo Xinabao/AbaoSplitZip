@@ -36,7 +36,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='AbaoZip',
+    name='AbaoSplitZip',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

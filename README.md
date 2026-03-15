@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  🌐 <a href="https://www.aboutdisk.com/AbaoSoftware/Abaozip">Official Website / 官方网站</a>
+  🌐 <a href="https://www.aboutdisk.com/AbaoSoftware/AbaoSplitZip">Official Website / 官方网站</a>
 </p>
 
 <p align="center">

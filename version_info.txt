@@ -15,13 +15,13 @@ VSVersionInfo(
       [
       StringTable(
         u'040904B0',
-        [StringStruct(u'CompanyName', u'AbaoZip Open Source'),
-        StringStruct(u'FileDescription', u'AbaoZip File Splitter & Merger'),
+        [StringStruct(u'CompanyName', u'AbaoSplitZip Open Source'),
+        StringStruct(u'FileDescription', u'AbaoSplitZip File Splitter & Merger'),
         StringStruct(u'FileVersion', u'1.2.0'),
-        StringStruct(u'InternalName', u'AbaoZip'),
-        StringStruct(u'LegalCopyright', u'Copyright (c) 2024 AbaoZip Contributors'),
-        StringStruct(u'OriginalFilename', u'AbaoZip.exe'),
-        StringStruct(u'ProductName', u'AbaoZip'),
+        StringStruct(u'InternalName', u'AbaoSplitZip'),
+        StringStruct(u'LegalCopyright', u'Copyright (c) 2024 AbaoSplitZip Contributors'),
+        StringStruct(u'OriginalFilename', u'AbaoSplitZip.exe'),
+        StringStruct(u'ProductName', u'AbaoSplitZip'),
         StringStruct(u'ProductVersion', u'1.2.0')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
