@@ -3,7 +3,6 @@ AbaoZip GUI 主窗口 (i18n)
 """
 
 import os
-import sys
 
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QUrl
 from PyQt5.QtGui import QFont, QIcon, QDesktopServices
@@ -13,18 +12,10 @@ from PyQt5.QtWidgets import (
     QRadioButton, QSpinBox, QTabWidget, QTextEdit, QVBoxLayout, QWidget,
 )
 
-from core.packer import COMPRESSION_LEVELS, VolumePacker
+from core.packer import VolumePacker
 from core.unpacker import VolumeUnpacker, get_file_filter, SUPPORTED_EXTENSIONS
 from core.i18n import t, set_language, get_language, detect_system_language, LANGUAGES
 from gui.styles import MODERN_STYLE
-
-# Mapping from i18n key to the original Chinese key used in COMPRESSION_LEVELS
-_COMP_KEYS = [
-    ("compression_store", "仅存储 (最快)"),
-    ("compression_fast", "快速压缩"),
-    ("compression_normal", "标准压缩"),
-    ("compression_max", "最大压缩 (最慢)"),
-]
 
 class DragDropLineEdit(QLineEdit):
     """支持拖拽文件/文件夹的输入框"""
@@ -111,7 +102,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.worker = None
-        self._comp_keys = _COMP_KEYS
         
         # Apply Style
         if QApplication.instance():
@@ -260,8 +250,10 @@ class MainWindow(QMainWindow):
         # Compression
         comp_excl_row.addWidget(QLabel(t("label_compression")))
         self.comp_combo = QComboBox()
-        for i18n_key, _orig_key in self._comp_keys:
-            self.comp_combo.addItem(t(i18n_key))
+        self.comp_combo.addItem(t("compression_store"), "store")
+        self.comp_combo.addItem(t("compression_fast"), "fast")
+        self.comp_combo.addItem(t("compression_normal"), "normal")
+        self.comp_combo.addItem(t("compression_max"), "max")
         self.comp_combo.setCurrentIndex(2)  # "标准压缩"
         self.comp_combo.setFixedWidth(150)
         comp_excl_row.addWidget(self.comp_combo)
@@ -601,16 +593,14 @@ class MainWindow(QMainWindow):
         exclude_str = self.exclude_edit.text().strip()
         exclude_patterns = [p.strip() for p in exclude_str.split(",") if p.strip()]
 
-        # Map localized combo index back to original Chinese key for VolumePacker
-        comp_index = self.comp_combo.currentIndex()
-        compression_name = self._comp_keys[comp_index][1]
+        compression_key = self.comp_combo.itemData(self.comp_combo.currentIndex())
 
         packer = VolumePacker(
             source_dir=source,
             output_dir=output,
             volume_size_mb=self.size_spin.value(),
             password=password,
-            compression_name=compression_name,
+            compression_key=compression_key,
             encryption_method=encryption,
             mode=mode,
             exclude_patterns=exclude_patterns,

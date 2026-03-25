@@ -1,5 +1,5 @@
 """
-AbaoSplitZip 入口
+AbaoZip 入口
 启动画面先于主窗口显示，掩盖 Python/Qt 的加载延迟
 """
 
@@ -10,6 +10,7 @@ from PyQt5.QtGui import QColor, QFont, QPainter
 from PyQt5.QtWidgets import QApplication, QSplashScreen
 
 from core.i18n import detect_system_language, set_language, t
+from core.version import APP_NAME
 
 
 class AbaoSplash(QSplashScreen):
@@ -26,7 +27,7 @@ class AbaoSplash(QSplashScreen):
         painter.setPen(QColor("white"))
         painter.setFont(QFont("Microsoft YaHei UI", 22, QFont.Bold))
         painter.drawText(self.rect().adjusted(0, 30, 0, -40),
-                         Qt.AlignCenter, "AbaoSplitZip")
+                         Qt.AlignCenter, APP_NAME)
         painter.setFont(QFont("Microsoft YaHei UI", 10))
         painter.drawText(self.rect().adjusted(0, 40, 0, 0),
                          Qt.AlignCenter, t("splash_subtitle"))

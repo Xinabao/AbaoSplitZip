@@ -1,9 +1,11 @@
 """
-AbaoSplitZip 国际化支持
+AbaoZip 国际化支持
 支持 9 种语言：简体中文、繁體中文、英语、日语、韩语、德语、法语、西班牙语、葡萄牙语
 """
 
 import locale
+
+from core.version import APP_NAME, APP_VERSION, OFFICIAL_WEBSITE
 
 LANGUAGES = {
     "简体中文": "zh",
@@ -85,26 +87,26 @@ TEXTS = {
         "pt": "Abrir pasta saída",
     },
     "app_title": {
-        "zh": "AbaoSplitZip — 分卷独立解压打包工具",
-        "zh_TW": "AbaoSplitZip — 分卷獨立解壓打包工具",
-        "en": "AbaoSplitZip — Volume Packer with Independent Extraction",
-        "ja": "AbaoSplitZip — 分割独立解凍パッカー",
-        "ko": "AbaoSplitZip — 분할 독립 압축 해제 도구",
-        "de": "AbaoSplitZip — Volumen-Packer mit unabhängiger Extraktion",
-        "fr": "AbaoSplitZip — Empaqueteur par volumes avec extraction indépendante",
-        "es": "AbaoSplitZip — Empaquetador por volúmenes con extracción independiente",
-        "pt": "AbaoSplitZip — Empacotador por volumes com extração independente",
+        "zh": "AbaoZip — 分卷独立解压打包工具",
+        "zh_TW": "AbaoZip — 分卷獨立解壓打包工具",
+        "en": "AbaoZip — Volume Packer with Independent Extraction",
+        "ja": "AbaoZip — 分割独立解凍パッカー",
+        "ko": "AbaoZip — 분할 독립 압축 해제 도구",
+        "de": "AbaoZip — Volumen-Packer mit unabhängiger Extraktion",
+        "fr": "AbaoZip — Empaqueteur par volumes avec extraction indépendante",
+        "es": "AbaoZip — Empaquetador por volúmenes con extracción independiente",
+        "pt": "AbaoZip — Empacotador por volumes com extração independente",
     },
     "header_title": {
-        "zh": "AbaoSplitZip 分卷打包工具",
-        "zh_TW": "AbaoSplitZip 分卷打包工具",
-        "en": "AbaoSplitZip Volume Packer",
-        "ja": "AbaoSplitZip 分割パッカー",
-        "ko": "AbaoSplitZip 분할 압축 도구",
-        "de": "AbaoSplitZip Volumen-Packer",
-        "fr": "AbaoSplitZip Empaqueteur par volumes",
-        "es": "AbaoSplitZip Empaquetador por volúmenes",
-        "pt": "AbaoSplitZip Empacotador por volumes",
+        "zh": "AbaoZip 分卷打包工具",
+        "zh_TW": "AbaoZip 分卷打包工具",
+        "en": "AbaoZip Volume Packer",
+        "ja": "AbaoZip 分割パッカー",
+        "ko": "AbaoZip 분할 압축 도구",
+        "de": "AbaoZip Volumen-Packer",
+        "fr": "AbaoZip Empaqueteur par volumes",
+        "es": "AbaoZip Empaquetador por volúmenes",
+        "pt": "AbaoZip Empacotador por volumes",
     },
     "header_desc": {
         "zh": "将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。",
@@ -217,20 +219,20 @@ TEXTS = {
         "pt": "Sobre / Ajuda",
     },
     "about_title": {
-        "zh": "关于 AbaoSplitZip",
-        "zh_TW": "關於 AbaoSplitZip",
-        "en": "About AbaoSplitZip",
-        "ja": "AbaoSplitZipについて",
-        "ko": "AbaoSplitZip 정보",
-        "de": "Über AbaoSplitZip",
-        "fr": "À propos de AbaoSplitZip",
-        "es": "Acerca de AbaoSplitZip",
-        "pt": "Sobre o AbaoSplitZip",
+        "zh": "关于 AbaoZip",
+        "zh_TW": "關於 AbaoZip",
+        "en": "About AbaoZip",
+        "ja": "AbaoZipについて",
+        "ko": "AbaoZip 정보",
+        "de": "Über AbaoZip",
+        "fr": "À propos de AbaoZip",
+        "es": "Acerca de AbaoZip",
+        "pt": "Sobre o AbaoZip",
     },
     "about_content": {
-        "zh": """<h3>AbaoSplitZip v1.2.0</h3>
+        "zh": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>一款支持独立解压的分卷打包工具。</p>
-<p>🌐 <b>官方网站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>官方网站:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>使用帮助:</b>
 <ul>
@@ -239,9 +241,9 @@ TEXTS = {
 <li><b>合并:</b> 拖入任意分卷 (.zip)，自动合并解压所有关联分卷。</li>
 </ul>
 <p>开源协议: GPL v3</p>""",
-        "zh_TW": """<h3>AbaoSplitZip v1.2.0</h3>
+        "zh_TW": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>一款支援獨立解壓的分卷打包工具。</p>
-<p>🌐 <b>官方網站:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>官方網站:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>使用幫助:</b>
 <ul>
@@ -250,9 +252,9 @@ TEXTS = {
 <li><b>合併:</b> 拖入任意分卷 (.zip)，自動合併解壓所有關聯分卷。</li>
 </ul>
 <p>開源協議: GPL v3</p>""",
-        "en": """<h3>AbaoSplitZip v1.2.0</h3>
+        "en": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>A volume packer with independent extraction support.</p>
-<p>🌐 <b>Official Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>Official Website:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>Quick Help:</b>
 <ul>
@@ -261,9 +263,9 @@ TEXTS = {
 <li><b>Merge:</b> Drag any volume (.zip), it will auto-merge and extract all parts.</li>
 </ul>
 <p>License: GPL v3</p>""",
-        "ja": """<h3>AbaoSplitZip v1.2.0</h3>
+        "ja": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>独立解凍をサポートする分割パッカー。</p>
-<p>🌐 <b>公式サイト:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>公式サイト:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>ヘルプ:</b>
 <ul>
@@ -272,9 +274,9 @@ TEXTS = {
 <li><b>結合:</b> 任意の分巻(.zip)をドラッグ、全パーツを自動結合解凍。</li>
 </ul>
 <p>ライセンス: GPL v3</p>""",
-        "ko": """<h3>AbaoSplitZip v1.2.0</h3>
+        "ko": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>독립 압축 해제를 지원하는 분할 압축 도구입니다.</p>
-<p>🌐 <b>공식 웹사이트:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>공식 웹사이트:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>도움말:</b>
 <ul>
@@ -283,9 +285,9 @@ TEXTS = {
 <li><b>병합:</b> 임의의 볼륨(.zip) 드래그, 전체 자동 병합 해제.</li>
 </ul>
 <p>라이선스: GPL v3</p>""",
-        "de": """<h3>AbaoSplitZip v1.2.0</h3>
+        "de": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>Ein Volumen-Packer mit unabhängiger Extraktion.</p>
-<p>🌐 <b>Offizielle Website:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>Offizielle Website:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>Hilfe:</b>
 <ul>
@@ -294,9 +296,9 @@ TEXTS = {
 <li><b>Zusammenführen:</b> Beliebiges Volumen (.zip) ziehen, alles automatisch zusammenführen.</li>
 </ul>
 <p>Lizenz: GPL v3</p>""",
-        "fr": """<h3>AbaoSplitZip v1.2.0</h3>
+        "fr": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>Un empaqueteur de volumes avec extraction indépendante.</p>
-<p>🌐 <b>Site officiel:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>Site officiel:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>Aide:</b>
 <ul>
@@ -305,9 +307,9 @@ TEXTS = {
 <li><b>Fusionner:</b> Glisser un volume (.zip), fusion automatique.</li>
 </ul>
 <p>Licence: GPL v3</p>""",
-        "es": """<h3>AbaoSplitZip v1.2.0</h3>
+        "es": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>Un empaquetador de volúmenes con extracción independiente.</p>
-<p>🌐 <b>Sitio web oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>Sitio web oficial:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>Ayuda:</b>
 <ul>
@@ -316,9 +318,9 @@ TEXTS = {
 <li><b>Fusionar:</b> Arrastrar volumen (.zip), fusión automática.</li>
 </ul>
 <p>Licencia: GPL v3</p>""",
-        "pt": """<h3>AbaoSplitZip v1.2.0</h3>
+        "pt": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
 <p>Um empacotador de volumes com extração independente.</p>
-<p>🌐 <b>Site oficial:</b> <a href="https://www.aboutdisk.com/AbaoSoftware/abaosplitzip">www.aboutdisk.com/AbaoSoftware/abaosplitzip</a></p>
+<p>🌐 <b>Site oficial:</b> <a href="{OFFICIAL_WEBSITE}">{OFFICIAL_WEBSITE}</a></p>
 <hr>
 <b>Ajuda:</b>
 <ul>
@@ -854,8 +856,8 @@ def detect_system_language() -> str:
             return "es"
         elif lang_code in ("pt",):
             return "pt"
-    except Exception:
-        pass
+    except (AttributeError, IndexError, TypeError, ValueError):
+        return "en"
     return "en"
 
 

@@ -70,13 +70,13 @@ MyFolder_一键全部解压.bat
 ## 🔧 Build / 构建
 
 ### Windows
-Double-click `build.bat` or run:
+双击 `build.bat`，或执行：
 ```cmd
 build.bat
 ```
 
 ### macOS / Linux
-Run the shell script:
+执行 shell 脚本：
 ```bash
 chmod +x build.sh
 ./build.sh
@@ -88,7 +88,18 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+输出：`dist/AbaoZip`（Windows 下为 `AbaoZip.exe`）
+
+### 测试
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### 项目文档
+
+- `CHANGELOG.md` — 更新记录与维护说明
+- `CONTRIBUTING.md` — 本地开发、测试、发布流程
 
 ## ⚠️ Notes / 注意事项
 

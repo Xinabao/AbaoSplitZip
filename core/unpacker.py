@@ -1,5 +1,5 @@
 """
-AbaoSplitZip 解压逻辑
+AbaoZip 解压逻辑
 支持 ZIP（含加密）、7z、RAR 格式
 识别并解压同一组分卷压缩包
 """

@@ -16,14 +16,14 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: AbaoSplitZip-Windows
-            exe_name: AbaoSplitZip.exe
+            artifact_name: AbaoZip-Windows
+            exe_name: AbaoZip.exe
           - os: ubuntu-20.04
-            artifact_name: AbaoSplitZip-Linux
-            exe_name: AbaoSplitZip
+            artifact_name: AbaoZip-Linux
+            exe_name: AbaoZip
           - os: macos-latest
-            artifact_name: AbaoSplitZip-macOS
-            exe_name: AbaoSplitZip
+            artifact_name: AbaoZip-macOS
+            exe_name: AbaoZip
 
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +37,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
 
       - name: Install Linux libs (if Ubuntu)
         if: runner.os == 'Linux'
@@ -72,22 +75,22 @@ jobs:
           mkdir -p release
           
           # Windows
-          cp artifacts/AbaoSplitZip-Windows/AbaoSplitZip.exe release/
-          cd release && zip AbaoSplitZip-Windows.zip AbaoSplitZip.exe && rm AbaoSplitZip.exe && cd ..
+          cp artifacts/AbaoZip-Windows/AbaoZip.exe release/
+          cd release && zip AbaoZip-Windows.zip AbaoZip.exe && rm AbaoZip.exe && cd ..
           
           # Linux
-          cp artifacts/AbaoSplitZip-Linux/AbaoSplitZip release/
-          cd release && chmod +x AbaoSplitZip && tar czf AbaoSplitZip-Linux.tar.gz AbaoSplitZip && rm AbaoSplitZip && cd ..
+          cp artifacts/AbaoZip-Linux/AbaoZip release/
+          cd release && chmod +x AbaoZip && tar czf AbaoZip-Linux.tar.gz AbaoZip && rm AbaoZip && cd ..
           
           # macOS
-          cp artifacts/AbaoSplitZip-macOS/AbaoSplitZip release/
-          cd release && chmod +x AbaoSplitZip && tar czf AbaoSplitZip-macOS.tar.gz AbaoSplitZip && rm AbaoSplitZip && cd ..
+          cp artifacts/AbaoZip-macOS/AbaoZip release/
+          cd release && chmod +x AbaoZip && tar czf AbaoZip-macOS.tar.gz AbaoZip && rm AbaoZip && cd ..
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            release/AbaoSplitZip-Windows.zip
-            release/AbaoSplitZip-Linux.tar.gz
-            release/AbaoSplitZip-macOS.tar.gz
+            release/AbaoZip-Windows.zip
+            release/AbaoZip-Linux.tar.gz
+            release/AbaoZip-macOS.tar.gz
           generate_release_notes: true

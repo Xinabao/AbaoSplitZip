@@ -15,16 +15,10 @@ import pyzipper
 
 # 压缩级别映射
 COMPRESSION_LEVELS = {
-    "仅存储 (最快)": (zipfile.ZIP_STORED, 0),
-    "快速压缩": (zipfile.ZIP_DEFLATED, 1),
-    "标准压缩": (zipfile.ZIP_DEFLATED, 6),
-    "最大压缩 (最慢)": (zipfile.ZIP_DEFLATED, 9),
-}
-
-# 加密方式映射
-ENCRYPTION_METHODS = {
-    "ZipCrypto (兼容 Windows 资源管理器)": "zipcrypto",
-    "AES-256 (更安全，需第三方解压工具)": "aes256",
+    "store": (zipfile.ZIP_STORED, 0),
+    "fast": (zipfile.ZIP_DEFLATED, 1),
+    "normal": (zipfile.ZIP_DEFLATED, 6),
+    "max": (zipfile.ZIP_DEFLATED, 9),
 }
 
 
@@ -99,19 +93,24 @@ class VolumePacker:
         output_dir: str,
         volume_size_mb: float,
         password: Optional[str] = None,
-        compression_name: str = "标准压缩",
+        compression_key: str = "normal",
         encryption_method: str = "zipcrypto",
-        mode: str = "size_balanced",  # New parameter
-        exclude_patterns: list = None, # New parameter
+        mode: str = "size_balanced",
+        exclude_patterns: list = None,
         progress_callback=None,
         log_callback=None,
         cancel_check=None,
     ):
+        if volume_size_mb <= 0:
+            raise ValueError("volume_size_mb must be greater than 0")
+        if mode not in {"size_balanced", "directory_priority"}:
+            raise ValueError(f"unsupported mode: {mode}")
+
         self.source_dir = os.path.normpath(source_dir)
         self.output_dir = os.path.normpath(output_dir)
         self.volume_size_bytes = int(volume_size_mb * 1024 * 1024)
         self.password = password.encode("utf-8") if password else None
-        self.compression_name = compression_name
+        self.compression_key = compression_key
         self.encryption_method = encryption_method
         self.mode = mode
         self.exclude_patterns = exclude_patterns or []
@@ -119,7 +118,7 @@ class VolumePacker:
         self.log_callback = log_callback
         self.cancel_check = cancel_check
 
-        comp = COMPRESSION_LEVELS.get(compression_name, COMPRESSION_LEVELS["标准压缩"])
+        comp = COMPRESSION_LEVELS.get(compression_key, COMPRESSION_LEVELS["normal"])
         self.compression_type = comp[0]
         self.compression_level = comp[1]
 

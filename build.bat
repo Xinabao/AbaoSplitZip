@@ -1,5 +1,10 @@
 @echo off
-echo === AbaoSplitZip Build ===
+for /f "delims=" %%V in ('python -c "from core.version import APP_NAME, APP_VERSION; print(APP_NAME + '|' + APP_VERSION)"') do set "APP_META=%%V"
+for /f "tokens=1,2 delims=|" %%A in ("%APP_META%") do (
+    set "APP_NAME=%%A"
+    set "APP_VERSION=%%B"
+)
+echo === %APP_NAME% Build ===
 echo.
 echo Installing dependencies...
 pip install -r requirements.txt --quiet
@@ -14,12 +19,12 @@ for /f "tokens=*" %%P in ('python -c "import sys,os;print(os.path.dirname(sys.ex
 )
 echo.
 echo Creating release package...
-mkdir "%SCRIPT_DIR%\dist\AbaoZip_Release" 2>nul
-copy /Y "%SCRIPT_DIR%\dist\AbaoZip.exe" "%SCRIPT_DIR%\dist\AbaoZip_Release\" >nul
-copy /Y "%SCRIPT_DIR%\resources\使用说明.txt" "%SCRIPT_DIR%\dist\AbaoZip_Release\" >nul
-powershell -Command "Compress-Archive -Path '%SCRIPT_DIR%\dist\AbaoZip_Release\*' -DestinationPath '%SCRIPT_DIR%\dist\AbaoZip_v1.2.0.zip' -Force"
+mkdir "%SCRIPT_DIR%\dist\%APP_NAME%_Release" 2>nul
+copy /Y "%SCRIPT_DIR%\dist\%APP_NAME%.exe" "%SCRIPT_DIR%\dist\%APP_NAME%_Release\" >nul
+copy /Y "%SCRIPT_DIR%\resources\使用说明.txt" "%SCRIPT_DIR%\dist\%APP_NAME%_Release\" >nul
+powershell -Command "Compress-Archive -Path '%SCRIPT_DIR%\dist\%APP_NAME%_Release\*' -DestinationPath '%SCRIPT_DIR%\dist\%APP_NAME%_v%APP_VERSION%.zip' -Force"
 echo.
 echo Done!
-echo   EXE: dist\AbaoZip.exe
-echo   Release: dist\AbaoZip_v1.2.0.zip
+echo   EXE: dist\%APP_NAME%.exe
+echo   Release: dist\%APP_NAME%_v%APP_VERSION%.zip
 pause

@@ -89,6 +89,17 @@ python -m PyInstaller build.spec --clean --noconfirm
 
 Output: `dist/AbaoZip` (or `AbaoZip.exe`)
 
+### Tests
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+### Project Docs
+
+- `CHANGELOG.md` — maintenance and release notes
+- `CONTRIBUTING.md` — setup, test, and release workflow for contributors
+
 ## ⚠️ Notes / 注意事项
 
 - Volume sizes are approximate — single files are never split across volumes

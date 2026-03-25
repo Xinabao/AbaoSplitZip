@@ -1,6 +1,7 @@
-# -*- mode: python ; coding: utf-8 -*-
-import sys
 import os
+import sys
+
+from core.version import APP_NAME
 
 python_dir = os.path.dirname(sys.executable)
 python_dll = os.path.join(python_dir, f'python{sys.version_info.major}{sys.version_info.minor}.dll')
@@ -36,7 +37,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='AbaoSplitZip',
+    name=APP_NAME,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
