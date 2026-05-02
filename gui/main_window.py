@@ -1,5 +1,5 @@
 """
-AbaoZip GUI 主窗口 (i18n)
+AbaoSplitZip GUI 主窗口 (i18n)
 """
 
 import os
@@ -64,7 +64,10 @@ class PackWorker(QThread):
             else:
                 self.finished.emit(True, f"完成，共 {result.volumes} 卷")
         except Exception as e:
-            self.finished.emit(False, str(e))
+            if self._cancelled:
+                self.finished.emit(False, "已取消")
+            else:
+                self.finished.emit(False, str(e))
 
     def cancel(self):
         self._cancelled = True
@@ -92,7 +95,10 @@ class UnpackWorker(QThread):
             else:
                 self.finished.emit(True, f"完成，共解压 {result.total_files} 个文件")
         except Exception as e:
-            self.finished.emit(False, str(e))
+            if self._cancelled:
+                self.finished.emit(False, "已取消")
+            else:
+                self.finished.emit(False, str(e))
 
     def cancel(self):
         self._cancelled = True
@@ -102,6 +108,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.worker = None
+        self.current_output_dir = None
+        self.last_output_dir = None
         
         # Apply Style
         if QApplication.instance():
@@ -470,6 +478,8 @@ class MainWindow(QMainWindow):
     # ── 语言切换 ──
 
     def _on_language_changed(self, lang_name: str):
+        if self.worker and self.worker.isRunning():
+            return
         code = LANGUAGES.get(lang_name)
         if code and code != get_language():
             set_language(code)
@@ -567,12 +577,8 @@ class MainWindow(QMainWindow):
         self.btn_cancel.setEnabled(not enabled)
         self.btn_unpack_cancel.setEnabled(not enabled)
         self.btn_merge_cancel.setEnabled(not enabled)
-        
-        # Enable open folder only if finished and not running
-        if enabled and (self.output_edit.text() or self.merge_output_edit.text()):
-             self.btn_open.setEnabled(True)
-        else:
-             self.btn_open.setEnabled(False)
+        self.lang_combo.setEnabled(enabled)
+        self.btn_open.setEnabled(enabled and bool(self.last_output_dir))
 
     def _start_pack(self):
         source = self.source_edit.text().strip()
@@ -606,8 +612,18 @@ class MainWindow(QMainWindow):
             exclude_patterns=exclude_patterns,
         )
 
+        try:
+            preview = packer.preview()
+        except Exception as e:
+            QMessageBox.warning(self, t("msg_hint"), str(e))
+            return
+        if not self._confirm_pack_preview(preview):
+            return
+
         self.log_text.clear()
         self.progress_bar.setValue(0)
+        self.current_output_dir = output
+        self.last_output_dir = None
         self._set_buttons_enabled(False)
         self.btn_open.setEnabled(False)
 
@@ -629,15 +645,21 @@ class MainWindow(QMainWindow):
             return
 
         password = self.unpack_pwd_edit.text() or None
+        conflict_strategy = self._choose_conflict_strategy(output, zip_path)
+        if conflict_strategy is None:
+            return
 
         unpacker = VolumeUnpacker(
             first_zip=zip_path,
             output_dir=output,
             password=password,
+            conflict_strategy=conflict_strategy,
         )
 
         self.log_text.clear()
         self.progress_bar.setValue(0)
+        self.current_output_dir = output
+        self.last_output_dir = None
         self._set_buttons_enabled(False)
 
         self.worker = UnpackWorker(unpacker)
@@ -658,16 +680,22 @@ class MainWindow(QMainWindow):
             return
 
         password = self.merge_pwd_edit.text() or None
+        conflict_strategy = self._choose_conflict_strategy(output, zip_path)
+        if conflict_strategy is None:
+            return
 
         # Re-use VolumeUnpacker - it already handles finding volumes!
         unpacker = VolumeUnpacker(
             first_zip=zip_path,
             output_dir=output,
             password=password,
+            conflict_strategy=conflict_strategy,
         )
 
         self.log_text.clear()
         self.progress_bar.setValue(0)
+        self.current_output_dir = output
+        self.last_output_dir = None
         self._set_buttons_enabled(False)
         self.btn_open.setEnabled(False)
 
@@ -685,12 +713,80 @@ class MainWindow(QMainWindow):
         msg.setText(t("about_content"))
         msg.exec_()
 
+    def _confirm_pack_preview(self, preview) -> bool:
+        details = t("msg_pack_preview").format(
+            files=preview.total_files,
+            size=preview.total_size / 1024 / 1024,
+            volumes=preview.volumes,
+            max_file=preview.max_file_size / 1024 / 1024,
+        )
+        if preview.has_oversized_file:
+            details += "\n\n" + t("msg_pack_preview_oversized")
+        reply = QMessageBox.question(
+            self,
+            t("msg_pack_preview_title"),
+            details,
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes,
+        )
+        return reply == QMessageBox.Yes
+
+    def _choose_conflict_strategy(self, output_dir: str, archive_path: str):
+        if os.path.splitext(archive_path)[1].lower() != ".zip":
+            return "error"
+        if not os.path.isdir(output_dir):
+            return "error"
+        with os.scandir(output_dir) as entries:
+            has_existing_items = any(entries)
+        if not has_existing_items:
+            return "error"
+
+        msg = QMessageBox(self)
+        msg.setWindowTitle(t("msg_conflict_strategy_title"))
+        msg.setText(t("msg_conflict_strategy"))
+        stop_btn = msg.addButton(t("btn_conflict_error"), QMessageBox.AcceptRole)
+        skip_btn = msg.addButton(t("btn_conflict_skip"), QMessageBox.ActionRole)
+        rename_btn = msg.addButton(t("btn_conflict_rename"), QMessageBox.ActionRole)
+        overwrite_btn = msg.addButton(t("btn_conflict_overwrite"), QMessageBox.DestructiveRole)
+        cancel_btn = msg.addButton(t("btn_cancel"), QMessageBox.RejectRole)
+        msg.setDefaultButton(stop_btn)
+        msg.exec_()
+
+        clicked = msg.clickedButton()
+        if clicked == stop_btn:
+            return "error"
+        if clicked == skip_btn:
+            return "skip"
+        if clicked == rename_btn:
+            return "rename"
+        if clicked == overwrite_btn:
+            return "overwrite"
+        if clicked == cancel_btn:
+            return None
+        return None
+
     def _cancel(self):
         if self.worker:
             self.worker.cancel()
 
+    def closeEvent(self, event):
+        if self.worker and self.worker.isRunning():
+            reply = QMessageBox.question(
+                self,
+                t("msg_hint"),
+                t("msg_confirm_cancel_exit"),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if reply != QMessageBox.Yes:
+                event.ignore()
+                return
+            self.worker.cancel()
+            self.worker.wait(3000)
+        event.accept()
+
     def _open_output_folder(self):
-        path = self.output_edit.text().strip()
+        path = self.last_output_dir
         if path and os.path.isdir(path):
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
@@ -701,8 +797,11 @@ class MainWindow(QMainWindow):
         self._set_buttons_enabled(True)
         if success:
             self.progress_bar.setValue(100)
+            self.last_output_dir = self.current_output_dir
             self.btn_open.setEnabled(True)
             QMessageBox.information(self, t("msg_done"), msg)
         else:
+            self.last_output_dir = None
             QMessageBox.warning(self, t("msg_hint"), t("msg_incomplete") + msg)
+        self.current_output_dir = None
         self.worker = None

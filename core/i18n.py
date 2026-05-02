@@ -1,5 +1,5 @@
 """
-AbaoZip 国际化支持
+AbaoSplitZip 国际化支持
 支持 9 种语言：简体中文、繁體中文、英语、日语、韩语、德语、法语、西班牙语、葡萄牙语
 """
 
@@ -87,26 +87,26 @@ TEXTS = {
         "pt": "Abrir pasta saída",
     },
     "app_title": {
-        "zh": "AbaoZip — 分卷独立解压打包工具",
-        "zh_TW": "AbaoZip — 分卷獨立解壓打包工具",
-        "en": "AbaoZip — Volume Packer with Independent Extraction",
-        "ja": "AbaoZip — 分割独立解凍パッカー",
-        "ko": "AbaoZip — 분할 독립 압축 해제 도구",
-        "de": "AbaoZip — Volumen-Packer mit unabhängiger Extraktion",
-        "fr": "AbaoZip — Empaqueteur par volumes avec extraction indépendante",
-        "es": "AbaoZip — Empaquetador por volúmenes con extracción independiente",
-        "pt": "AbaoZip — Empacotador por volumes com extração independente",
+        "zh": "AbaoSplitZip — 分卷独立解压打包工具",
+        "zh_TW": "AbaoSplitZip — 分卷獨立解壓打包工具",
+        "en": "AbaoSplitZip — Volume Packer with Independent Extraction",
+        "ja": "AbaoSplitZip — 分割独立解凍パッカー",
+        "ko": "AbaoSplitZip — 분할 독립 압축 해제 도구",
+        "de": "AbaoSplitZip — Volumen-Packer mit unabhängiger Extraktion",
+        "fr": "AbaoSplitZip — Empaqueteur par volumes avec extraction indépendante",
+        "es": "AbaoSplitZip — Empaquetador por volúmenes con extracción independiente",
+        "pt": "AbaoSplitZip — Empacotador por volumes com extração independente",
     },
     "header_title": {
-        "zh": "AbaoZip 分卷打包工具",
-        "zh_TW": "AbaoZip 分卷打包工具",
-        "en": "AbaoZip Volume Packer",
-        "ja": "AbaoZip 分割パッカー",
-        "ko": "AbaoZip 분할 압축 도구",
-        "de": "AbaoZip Volumen-Packer",
-        "fr": "AbaoZip Empaqueteur par volumes",
-        "es": "AbaoZip Empaquetador por volúmenes",
-        "pt": "AbaoZip Empacotador por volumes",
+        "zh": "AbaoSplitZip 分卷打包工具",
+        "zh_TW": "AbaoSplitZip 分卷打包工具",
+        "en": "AbaoSplitZip Volume Packer",
+        "ja": "AbaoSplitZip 分割パッカー",
+        "ko": "AbaoSplitZip 분할 압축 도구",
+        "de": "AbaoSplitZip Volumen-Packer",
+        "fr": "AbaoSplitZip Empaqueteur par volumes",
+        "es": "AbaoSplitZip Empaquetador por volúmenes",
+        "pt": "AbaoSplitZip Empacotador por volumes",
     },
     "header_desc": {
         "zh": "将大文件夹按指定大小分卷打包，每个分卷都是独立的 ZIP，可单独解压。",
@@ -219,15 +219,15 @@ TEXTS = {
         "pt": "Sobre / Ajuda",
     },
     "about_title": {
-        "zh": "关于 AbaoZip",
-        "zh_TW": "關於 AbaoZip",
-        "en": "About AbaoZip",
-        "ja": "AbaoZipについて",
-        "ko": "AbaoZip 정보",
-        "de": "Über AbaoZip",
-        "fr": "À propos de AbaoZip",
-        "es": "Acerca de AbaoZip",
-        "pt": "Sobre o AbaoZip",
+        "zh": "关于 AbaoSplitZip",
+        "zh_TW": "關於 AbaoSplitZip",
+        "en": "About AbaoSplitZip",
+        "ja": "AbaoSplitZipについて",
+        "ko": "AbaoSplitZip 정보",
+        "de": "Über AbaoSplitZip",
+        "fr": "À propos de AbaoSplitZip",
+        "es": "Acerca de AbaoSplitZip",
+        "pt": "Sobre o AbaoSplitZip",
     },
     "about_content": {
         "zh": f"""<h3>{APP_NAME} v{APP_VERSION}</h3>
@@ -681,6 +681,56 @@ TEXTS = {
         "fr": "Opération incomplète : ",
         "es": "Operación incompleta: ",
         "pt": "Operação incompleta: ",
+    },
+    "msg_confirm_cancel_exit": {
+        "zh": "当前操作仍在进行。要取消任务并退出吗？",
+        "zh_TW": "目前操作仍在進行。要取消任務並退出嗎？",
+        "en": "An operation is still running. Cancel it and exit?",
+    },
+    "msg_pack_preview_title": {
+        "zh": "确认打包任务",
+        "zh_TW": "確認打包任務",
+        "en": "Confirm packing task",
+    },
+    "msg_pack_preview": {
+        "zh": "将打包 {files} 个文件，总大小约 {size:.1f} MB，预计生成 {volumes} 个分卷。\n最大单个文件约 {max_file:.1f} MB。\n\n要开始吗？",
+        "zh_TW": "將打包 {files} 個檔案，總大小約 {size:.1f} MB，預計產生 {volumes} 個分卷。\n最大單一檔案約 {max_file:.1f} MB。\n\n要開始嗎？",
+        "en": "Packing {files} files, about {size:.1f} MB total, into an estimated {volumes} volume(s).\nLargest single file: about {max_file:.1f} MB.\n\nStart now?",
+    },
+    "msg_pack_preview_oversized": {
+        "zh": "注意：有单个文件超过分卷大小。该文件不会被切开，所在分卷会大于预设大小。",
+        "zh_TW": "注意：有單一檔案超過分卷大小。該檔案不會被切開，所在分卷會大於預設大小。",
+        "en": "Note: at least one file is larger than the volume size. It will not be split, so its volume will be larger than the target size.",
+    },
+    "msg_conflict_strategy_title": {
+        "zh": "目标目录已有文件",
+        "zh_TW": "目標目錄已有檔案",
+        "en": "Files already exist",
+    },
+    "msg_conflict_strategy": {
+        "zh": "解压时如果遇到同名文件，要怎么处理？\n\n建议选择“停止”，最安全；如果你确定要继续，可以选择跳过、重命名或覆盖。",
+        "zh_TW": "解壓時如果遇到同名檔案，要怎麼處理？\n\n建議選擇「停止」，最安全；如果你確定要繼續，可以選擇跳過、重新命名或覆蓋。",
+        "en": "What should happen if extraction finds files with the same name?\n\nStop is safest. If you are sure, you can skip, rename, or overwrite conflicts.",
+    },
+    "btn_conflict_error": {
+        "zh": "停止（推荐）",
+        "zh_TW": "停止（建議）",
+        "en": "Stop (recommended)",
+    },
+    "btn_conflict_skip": {
+        "zh": "跳过已有",
+        "zh_TW": "跳過既有檔案",
+        "en": "Skip existing",
+    },
+    "btn_conflict_rename": {
+        "zh": "自动重命名",
+        "zh_TW": "自動重新命名",
+        "en": "Auto rename",
+    },
+    "btn_conflict_overwrite": {
+        "zh": "覆盖",
+        "zh_TW": "覆蓋",
+        "en": "Overwrite",
     },
     "dialog_select_source": {
         "zh": "选择源文件夹",

@@ -12,7 +12,9 @@
 
 ---
 
-# AbaoZip (anteriormente AbaoSplitZip)
+# AbaoSplitZip
+
+> Final GPL open-source release. This repository is intended to be archived after v1.4.0; future commercial development will happen separately.
 
 Divida carpetas grandes en volúmenes comprimidos según el tamaño especificado. **Cada volumen es un archivo ZIP independiente** que puede extraerse por separado sin fusionarse.
 
@@ -31,11 +33,11 @@ Divida carpetas grandes en volúmenes comprimidos según el tamaño especificado
 
 ### Uso
 
-Descargue desde [Releases](https://github.com/Xinabao/AbaoZip/releases) o el [sitio oficial](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip), o ejecute desde el código fuente:
+Descargue desde [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) o el [sitio oficial](https://www.abaodisk.com/Abaozip), o ejecute desde el código fuente:
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -87,7 +89,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+Output: `dist/AbaoSplitZip` (or `AbaoSplitZip.exe`)
 
 ## ⚠️ Notes / 注意事项
 

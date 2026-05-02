@@ -12,7 +12,9 @@
 
 ---
 
-# AbaoZip (구 AbaoSplitZip)
+# AbaoSplitZip
+
+> Final GPL open-source release. This repository is intended to be archived after v1.4.0; future commercial development will happen separately.
 
 큰 폴더를 지정된 크기로 분할 압축합니다. **각 분할 볼륨은 독립적인 ZIP 파일**이며 병합 없이 개별 추출 가능합니다.
 
@@ -31,11 +33,11 @@
 
 ### 사용 방법
 
-[Releases](https://github.com/Xinabao/AbaoZip/releases) 또는 [공식 웹사이트](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip)에서 다운로드하거나 소스에서 실행합니다:
+[Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 또는 [공식 웹사이트](https://www.abaodisk.com/Abaozip)에서 다운로드하거나 소스에서 실행합니다:
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -87,7 +89,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+Output: `dist/AbaoSplitZip` (or `AbaoSplitZip.exe`)
 
 ## ⚠️ Notes / 注意事项
 

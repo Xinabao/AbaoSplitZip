@@ -12,7 +12,17 @@
 
 ---
 
-# AbaoZip (原 AbaoSplitZip)
+# AbaoSplitZip
+
+> 最终 GPL 开源版。v1.4.0 发布后，本仓库计划归档；后续商业开发将另行进行。
+
+## 后续商业版本
+
+本仓库保留 AbaoSplitZip v1.4.0 最终 GPL 开源版本。源码、Release 下载和 GPL v3 授权权利保持不变。
+
+后续商业产品线将以 AbaoZip 名称独立开发，采用不同许可证和功能路线：
+
+https://www.abaodisk.com/Abaozip
 
 将大文件夹按指定大小分卷打包，**每个分卷都是独立的 ZIP 文件**，可单独解压，无需合并。
 
@@ -31,11 +41,11 @@
 
 ### 使用方法
 
-从 [Releases](https://github.com/Xinabao/AbaoZip/releases) 或 [官方网站](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip) 下载，或从源码运行：
+从 [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 下载最终 GPL 开源版，访问 [后续商业版本页面](https://www.abaodisk.com/Abaozip)，或从源码运行：
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -88,7 +98,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-输出：`dist/AbaoZip`（Windows 下为 `AbaoZip.exe`）
+输出：`dist/AbaoSplitZip`（Windows 下为 `AbaoSplitZip.exe`）
 
 ### 测试
 
@@ -100,6 +110,10 @@ python -m unittest discover -s tests -v
 
 - `CHANGELOG.md` — 更新记录与维护说明
 - `CONTRIBUTING.md` — 本地开发、测试、发布流程
+- `ARCHIVE_NOTICE.md` — 最终开源归档说明
+- `RELEASE_NOTES_1.4.0.md` — 最终 GPL 版本的 GitHub 发布说明
+- `RELEASE_CHECKLIST_1.4.0.md` — 最终发布与归档检查清单
+- `THIRD_PARTY_NOTICES.md` — 第三方依赖许可证说明
 
 ## ⚠️ Notes / 注意事项
 

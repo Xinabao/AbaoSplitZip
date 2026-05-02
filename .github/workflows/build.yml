@@ -16,14 +16,14 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: AbaoZip-Windows
-            exe_name: AbaoZip.exe
+            artifact_name: AbaoSplitZip-Windows
+            exe_name: AbaoSplitZip.exe
           - os: ubuntu-20.04
-            artifact_name: AbaoZip-Linux
-            exe_name: AbaoZip
+            artifact_name: AbaoSplitZip-Linux
+            exe_name: AbaoSplitZip
           - os: macos-latest
-            artifact_name: AbaoZip-macOS
-            exe_name: AbaoZip
+            artifact_name: AbaoSplitZip-macOS
+            exe_name: AbaoSplitZip
 
     steps:
       - uses: actions/checkout@v4
@@ -75,22 +75,22 @@ jobs:
           mkdir -p release
           
           # Windows
-          cp artifacts/AbaoZip-Windows/AbaoZip.exe release/
-          cd release && zip AbaoZip-Windows.zip AbaoZip.exe && rm AbaoZip.exe && cd ..
+          cp artifacts/AbaoSplitZip-Windows/AbaoSplitZip.exe release/
+          cd release && zip AbaoSplitZip-Windows.zip AbaoSplitZip.exe && rm AbaoSplitZip.exe && cd ..
           
           # Linux
-          cp artifacts/AbaoZip-Linux/AbaoZip release/
-          cd release && chmod +x AbaoZip && tar czf AbaoZip-Linux.tar.gz AbaoZip && rm AbaoZip && cd ..
+          cp artifacts/AbaoSplitZip-Linux/AbaoSplitZip release/
+          cd release && chmod +x AbaoSplitZip && tar czf AbaoSplitZip-Linux.tar.gz AbaoSplitZip && rm AbaoSplitZip && cd ..
           
           # macOS
-          cp artifacts/AbaoZip-macOS/AbaoZip release/
-          cd release && chmod +x AbaoZip && tar czf AbaoZip-macOS.tar.gz AbaoZip && rm AbaoZip && cd ..
+          cp artifacts/AbaoSplitZip-macOS/AbaoSplitZip release/
+          cd release && chmod +x AbaoSplitZip && tar czf AbaoSplitZip-macOS.tar.gz AbaoSplitZip && rm AbaoSplitZip && cd ..
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            release/AbaoZip-Windows.zip
-            release/AbaoZip-Linux.tar.gz
-            release/AbaoZip-macOS.tar.gz
+            release/AbaoSplitZip-Windows.zip
+            release/AbaoSplitZip-Linux.tar.gz
+            release/AbaoSplitZip-macOS.tar.gz
           generate_release_notes: true

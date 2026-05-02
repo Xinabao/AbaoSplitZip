@@ -12,7 +12,9 @@
 
 ---
 
-# AbaoZip（旧称 AbaoSplitZip）
+# AbaoSplitZip
+
+> Final GPL open-source release. This repository is intended to be archived after v1.4.0; future commercial development will happen separately.
 
 大きなフォルダを指定サイズでボリュームに分割してパッケージ化します。**各ボリュームは独立した ZIP ファイル**で、マージなしで個別に抽出できます。
 
@@ -31,11 +33,11 @@
 
 ### 使用方法
 
-[Releases](https://github.com/Xinabao/AbaoZip/releases) または[公式ウェブサイト](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip)からダウンロードするか、ソースから実行します：
+[Releases](https://github.com/Xinabao/AbaoSplitZip/releases) または[公式ウェブサイト](https://www.abaodisk.com/Abaozip)からダウンロードするか、ソースから実行します：
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -87,7 +89,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+Output: `dist/AbaoSplitZip` (or `AbaoSplitZip.exe`)
 
 ## ⚠️ Notes / 注意事项
 

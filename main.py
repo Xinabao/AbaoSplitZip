@@ -1,5 +1,5 @@
 """
-AbaoZip 入口
+AbaoSplitZip 入口
 启动画面先于主窗口显示，掩盖 Python/Qt 的加载延迟
 """
 

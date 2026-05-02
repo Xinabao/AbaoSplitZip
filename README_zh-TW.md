@@ -12,7 +12,9 @@
 
 ---
 
-# AbaoZip (原 AbaoSplitZip)
+# AbaoSplitZip
+
+> 最終 GPL 開源版。v1.4.0 發布後，本倉庫計劃歸檔；後續商業開發將另行進行。
 
 將大資料夾按指定大小分卷打包，**每個分卷都是獨立的 ZIP 檔案**，可單獨解壓，無需合併。
 
@@ -31,11 +33,11 @@
 
 ### 使用方法
 
-從 [Releases](https://github.com/Xinabao/AbaoZip/releases) 或 [官方網站](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip) 下載，或從源碼執行：
+從 [Releases](https://github.com/Xinabao/AbaoSplitZip/releases) 或 [官方網站](https://www.abaodisk.com/Abaozip) 下載，或從源碼執行：
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -87,7 +89,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+Output: `dist/AbaoSplitZip` (or `AbaoSplitZip.exe`)
 
 ## ⚠️ Notes / 注意事项
 

@@ -12,7 +12,17 @@
 
 ---
 
-# AbaoZip (formerly AbaoSplitZip)
+# AbaoSplitZip
+
+> Final GPL open-source release. This repository is intended to be archived after v1.4.0; future commercial development will happen separately.
+
+## Commercial Successor
+
+This repository preserves the final GPL open-source release of AbaoSplitZip v1.4.0. Source code, release downloads, and GPL v3 rights remain available.
+
+Future commercial development continues separately under the AbaoZip product line, with a different license and feature roadmap:
+
+https://www.abaodisk.com/Abaozip
 
 Split large folders into independently extractable ZIP volumes by specified size. **Each volume is a standalone ZIP file** that can be extracted separately without merging.
 
@@ -31,11 +41,11 @@ Split large folders into independently extractable ZIP volumes by specified size
 
 ### Usage
 
-Download from [Releases](https://github.com/Xinabao/AbaoZip/releases) or the [official website](https://www.aboutdisk.com/AbaoSoftware/abaosplitzip), or run from source:
+Download the final GPL release from [Releases](https://github.com/Xinabao/AbaoSplitZip/releases), visit the [commercial successor page](https://www.abaodisk.com/Abaozip), or run from source:
 
 ```bash
-git clone https://github.com/Xinabao/AbaoZip.git
-cd AbaoZip
+git clone https://github.com/Xinabao/AbaoSplitZip.git
+cd AbaoSplitZip
 pip install -r requirements.txt
 python main.py
 ```
@@ -87,7 +97,7 @@ pip install -r requirements.txt
 python -m PyInstaller build.spec --clean --noconfirm
 ```
 
-Output: `dist/AbaoZip` (or `AbaoZip.exe`)
+Output: `dist/AbaoSplitZip` (or `AbaoSplitZip.exe`)
 
 ### Tests
 
@@ -99,6 +109,10 @@ python -m unittest discover -s tests -v
 
 - `CHANGELOG.md` — maintenance and release notes
 - `CONTRIBUTING.md` — setup, test, and release workflow for contributors
+- `ARCHIVE_NOTICE.md` — final open-source archive notice
+- `RELEASE_NOTES_1.4.0.md` — GitHub release notes for the final GPL version
+- `RELEASE_CHECKLIST_1.4.0.md` — final release and archive checklist
+- `THIRD_PARTY_NOTICES.md` — third-party dependency license notes
 
 ## ⚠️ Notes / 注意事项
 

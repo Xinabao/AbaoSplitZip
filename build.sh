@@ -1,7 +1,7 @@
 #!/bin/bash
 # Cross-platform build script for Linux/macOS
 
-echo "=== AbaoZip Build (Linux/macOS) ==="
+echo "=== AbaoSplitZip Build (Linux/macOS) ==="
 echo ""
 
 # Ensure we're in the script's directory

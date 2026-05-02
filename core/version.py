@@ -1,9 +1,8 @@
 """
-Shared project metadata for AbaoZip.
+Shared project metadata for the final open-source AbaoSplitZip release.
 """
 
-APP_NAME = "AbaoZip"
-LEGACY_NAME = "AbaoSplitZip"
-APP_VERSION = "1.3.1"
-OFFICIAL_WEBSITE = "https://www.aboutdisk.com/AbaoSoftware/abaosplitzip"
+APP_NAME = "AbaoSplitZip"
+APP_VERSION = "1.4.0"
+OFFICIAL_WEBSITE = "https://www.abaodisk.com/Abaozip"
 

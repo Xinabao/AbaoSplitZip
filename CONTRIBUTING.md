@@ -1,6 +1,10 @@
 # Contributing
 
-Thanks for helping improve AbaoZip.
+Thanks for helping improve AbaoSplitZip.
+
+This repository is being prepared as the final GPL open-source release. After
+`v1.4.0`, the repository is intended to be archived and new feature development
+will happen separately.
 
 ## Local setup
 

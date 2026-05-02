@@ -29,3 +29,6 @@ desktop.ini
 # PyInstaller
 *.manifest
 *.log
+
+# Private commercial planning notes
+docs/PRODUCT_WORK_PLAN.md
